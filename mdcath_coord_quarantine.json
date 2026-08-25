@@ -1,0 +1,170 @@
+{
+ "data_dir": "data",
+ "num_shards": 1000,
+ "sane_angstrom": 10000.0,
+ "min_extent_angstrom": 1.0,
+ "kinds": {
+  "saturated": 87,
+  "collapsed": 1,
+  "nonfinite": 0
+ },
+ "frames_scanned": 11603224,
+ "frames_quarantined": 88,
+ "num_affected_domains": 16,
+ "max_abs_coord_seen": 21474838.0,
+ "note": "Frames a protein cannot occupy. 'saturated': every atom at INT_MAX/1000 nm = 2.14748e7 A, an int32 overflow in the upstream XTC writer. 'collapsed': every atom at one point, usually the origin -- a final frame allocated but never written, which passes every magnitude test and is drawn with certainty by evenly spaced sampling because it is the last frame. Dropped, not repaired.",
+ "quarantine": {
+  "1gkgA02": {
+   "320/4": [
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149
+   ]
+  },
+  "1y66A00": {
+   "450/0": [
+    135,
+    136,
+    137,
+    138,
+    139
+   ]
+  },
+  "1zxqA02": {
+   "348/2": [
+    160
+   ]
+  },
+  "2akcA00": {
+   "320/1": [
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+   ]
+  },
+  "2jbrA03": {
+   "413/3": [
+    454,
+    455,
+    456,
+    457,
+    458,
+    459
+   ]
+  },
+  "2jysA00": {
+   "320/4": [
+    466,
+    467,
+    468,
+    469
+   ]
+  },
+  "2qenA03": {
+   "348/3": [
+    447
+   ]
+  },
+  "2wdcA03": {
+   "348/3": [
+    470,
+    471,
+    472,
+    473,
+    474
+   ]
+  },
+  "2y94A03": {
+   "348/3": [
+    318,
+    319
+   ]
+  },
+  "3b0dC00": {
+   "320/3": [
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99
+   ]
+  },
+  "3gk0A00": {
+   "348/0": [
+    352,
+    353,
+    354,
+    355
+   ]
+  },
+  "3j7aN00": {
+   "413/1": [
+    350,
+    351,
+    352,
+    353,
+    354,
+    355,
+    356
+   ]
+  },
+  "4ekuA01": {
+   "320/2": [
+    371,
+    372,
+    373,
+    374,
+    375
+   ]
+  },
+  "4o30B00": {
+   "379/3": [
+    211,
+    212,
+    213,
+    214,
+    215,
+    216,
+    217,
+    218,
+    219
+   ]
+  },
+  "4tmpA00": {
+   "348/4": [
+    216,
+    217,
+    218,
+    219
+   ]
+  },
+  "4qpiC00": {
+   "348/1": [
+    350,
+    351,
+    352,
+    353,
+    354,
+    355,
+    356
+   ]
+  }
+ }
+}

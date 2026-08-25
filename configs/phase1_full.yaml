@@ -1,0 +1,144 @@
+# Phase 1 full run -- 907 mdCATH domains, 4 GPUs (physical 4-7).
+#
+#   CUDA_VISIBLE_DEVICES=4,5,6,7 torchrun --nproc_per_node=4 \
+#       scripts/train_phase1.py --config configs/phase1_full.yaml \
+#       --out-dir runs/phase1_full
+#
+# The model family is identical to configs/phase1_small.yaml; only the data
+# volume, the batch size and the schedule differ. Values below marked "ablated"
+# or "measured" came from the three-arm ablation and the throughput sweep, not
+# from a guess -- see docs/open_questions.md and the notes on each line.
+
+data:
+  data_dir: data
+  esm2_cache_dir: esm2_cache
+  quarantine_path: mdcath_force_quarantine.json   # forces==coords trajectories
+  coord_quarantine_path: mdcath_coord_quarantine.json
+                                    # 87 frames in 15 domains where every atom
+                                    # saturated at INT_MAX/1000 nm = 2.14748e7 A.
+                                    # Rare (7.5e-6 of the corpus) but unavoidable:
+                                    # the affected trajectories are short, so
+                                    # sampling 40 frames from them takes the
+                                    # corrupt ones every time
+  represented_scope: heavy_atom
+  temperatures: null                # all five (320/348/379/413/450 K)
+  replicas: null                    # all five
+  frames_per_trajectory: 40         # evenly spaced; ~11 ns apart, so two frames
+                                    # of one trajectory are near-independent
+  ps_per_frame: 1000.0              # 1 ns/frame, from the mdCATH paper
+  max_domains: null                 # all of them
+  max_residues: 250                 # keeps 907 of 1000 domains (91%), mean 118
+                                    # residues; the cap bounds peak activation
+                                    # memory, which scales with the largest
+                                    # protein in a batch, not the mean
+  val_fraction: 0.2
+  split_seed: 0                     # split is BY DOMAIN, before frame enumeration
+  allow_fake_plm: false
+  check_pbc: true
+  batch_size: 24                    # PER RANK; effective batch = 24 * 4 = 96.
+                                    # 32/rank triggered allocator retries in the
+                                    # sweep, and that was with the energy branch
+                                    # on -- 24 leaves headroom for the largest
+                                    # domains, which are 2x the mean size
+  num_workers: 8                    # measured: 0 -> 20 batch/s, 8 -> 255, 16 -> 263
+  prefetch_factor: 4
+  val_frames: 2400                  # even stride over all val domains, fixed
+
+model:
+  target_scope: heavy_atom
+  predict_hidden_force: null        # null = infer from target_scope -> true.
+                                    # Identifiable because mdCATH stores
+                                    # hydrogens (measured 0.58-0.71 of the
+                                    # heavy-only residue force)
+  use_energy_branch: false          # ABLATED: identical atom/residue/torque
+                                    # metrics at equal step count, 2.6x the step
+                                    # cost. -grad U and the conservative/residual
+                                    # split are a Phase 1 physics deliverable, so
+                                    # they are recovered by fine-tuning a
+                                    # separate evaluation model with this on --
+                                    # they are not dropped, just not paid for
+                                    # during the bulk of training
+  isotropic_uncertainty: false
+  validate_inputs: true
+
+  encoder:
+    num_cycles: 2
+    num_radial_basis: 8
+    plm_projection_dim: 128
+    residue_scalar_channels: 64
+    atom_cutoff: 5.0                # audited: 21.4 heavy neighbours/atom
+    backbone_cutoff: 13.0           # audited: p95 radius of CA kNN(16)
+    atom_avg_neighbors: 21.4
+    backbone_avg_neighbors: 20.0
+    use_plm: true
+    use_temperature: true
+    use_atom_branch: true
+    use_backbone_branch: true
+    use_body_order_3: true
+    irreps:
+      lmax: 2
+      scalar_channels: 64
+      vector_channels: 16
+      tensor_channels: 8
+
+  graph:
+    sequence_max_offset: 2
+    require_contiguous_resid: true
+    residue_knn: 16                 # audited: mean CA radius 10.2 A
+    residue_cutoff: null
+    atom_cutoff: 5.0
+    atom_include_inter_residue: true
+    bond_tolerance: 1.3
+    lmax: 2
+
+train:
+  seed: 0
+  learning_rate: 1.0e-3             # 3e-3 diverged. Twice.
+                                    #
+                                    # A 15-minute sweep at batch 24 ranked
+                                    # 3e-3 > 1e-3 > 3e-4 on every metric, with the
+                                    # *smallest* gradients at 3e-3 -- and that
+                                    # ranking is real, it is just not the question
+                                    # that matters. Both full runs then died at
+                                    # full 3e-3 (steps ~4900 and ~9830) with no
+                                    # warning at all: healthy loss, gradient norm
+                                    # 6.2 against a clip of 10, then every batch
+                                    # non-finite within ~31 steps. Nothing was
+                                    # wrong with the data or the weights -- the
+                                    # exact failing batch replays clean through
+                                    # both the step-4000 and step-8000 weights.
+                                    #
+                                    # A short sweep measures which learning rate
+                                    # descends fastest. It cannot measure which one
+                                    # survives 120,000 steps, and those are not the
+                                    # same question. 1e-3 is the fastest rate with
+                                    # evidence of stability behind it.
+  weight_decay: 0.0
+  max_steps: 120000                 # ~13 epochs over 726k train frames
+  warmup_steps: 2000                # the heads emit a log-variance and the NLL
+                                    # divides by exp(logvar); one oversized early
+                                    # step can park the variance somewhere it
+                                    # takes thousands of steps to leave
+  lr_schedule: cosine
+  min_lr_factor: 0.05
+  eval_every: 2000
+  log_every: 200
+  checkpoint_every: 2000            # a run this long must survive being killed
+  grad_clip: 10.0
+  normalizer_batches: 16            # fitted on the TRAIN split only, then
+                                    # broadcast from rank 0 so every rank
+                                    # optimises the same scaled objective
+  device: cuda:0                    # overridden per rank under torchrun
+
+  # Untuned on purpose. The three NLL terms are the objective; the rest are
+  # regularisers. `aggregation_consistency` stays at 0.1: raising it to 1.0 cut
+  # the aggregation loss 4.6x and left residue_force_relative_rmse unchanged at
+  # 0.705, so the residue plateau is not caused by weak atom-residue coupling.
+  loss_weights:
+    atom_force: 1.0
+    residue_force: 1.0
+    torque: 1.0
+    hidden_force: 1.0
+    aggregation_consistency: 0.1
+    conservative_force: 0.1         # inert while use_energy_branch is false
+    energy_gauge: 1.0e-4            # inert while use_energy_branch is false

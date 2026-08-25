@@ -1,0 +1,77 @@
+# Phase 1.5 smoke -- a few domains, few pairs, short. Minutes, not hours.
+#
+#   python scripts/run_phase1_5_ablation.py --config configs/phase1_5_smoke.yaml
+#
+# Its job is to prove that A-E run on one manifest with one output contract, not
+# to measure anything. No number from this file is a result.
+
+phase1:
+  checkpoint: runs/phase1_full/last.pt
+  expect_contract:                  # refuse to run against a different Phase 1
+    physics_latent_irreps: 64x0e+16x1o+8x2e
+    physics_latent_dim: 152
+    frame: global
+    target_scope: heavy_atom
+
+data:
+  data_dir: data
+  esm2_cache_dir: esm2_cache
+  quarantine_path: mdcath_force_quarantine.json
+  coord_quarantine_path: mdcath_coord_quarantine.json
+  ps_per_frame: 1000.0              # 1 ns/frame, from the mdCATH paper
+  lags_ps: [1000.0, 4000.0]         # = 1 and 4 raw frames. Checked to be integral.
+  history_length: 2                 # (t-1, t) -> t+lag
+  max_residues: 250                 # the Phase 1 filter, so the split matches
+  temperatures: [320]               # one temperature keeps the smoke small
+  replicas: [0]
+  pairs_per_trajectory: 2
+  max_domains: 8                    # train domains; validation gets max_domains/4
+  val_fraction: 0.2
+  split_seed: 0
+  phase1_split_snapshot: runs/phase1_full/config_snapshot.json
+  batch_size: 4
+  num_workers: 0
+
+model:
+  arm: structure_only               # overridden per arm by the runner
+  num_blocks: 3                     # same depth as short/full: a smoke run at a
+                                    # different depth hid a divergence once already
+  residue_knn: 16
+  sequence_max_offset: 2
+  backbone_cutoff: 13.0
+  use_plm: true
+  use_temperature: true
+  irreps:
+    lmax: 2
+    scalar_channels: 32
+    vector_channels: 8
+    tensor_channels: 4
+  conditioner:
+    d_cond: 64                      # identical for every arm, including the zero one
+    hidden: 128
+    atom_message_dim: 64
+    uncertainty_gating: true
+
+train:
+  seed: 0
+  learning_rate: 1.0e-3
+  warmup_steps: 20
+  lr_schedule: cosine
+  min_lr_factor: 0.05
+  max_steps: 200
+  eval_every: 100
+  log_every: 50
+  grad_clip: 10.0
+  device: cuda:0
+  loss_weights:
+    translation: 1.0
+    rotation: 1.0
+    pair_distance: 0.1
+    clash: 0.0                      # measured clash rate is 0.000 on real pairs
+    translation_scale_angstrom: 2.5 # measured mean |delta_r| over 1-4 ns pairs
+    rotation_scale_radians: 0.59    # measured mean frame rotation (33.8 deg)
+    rotation_loss: chordal          # smooth at theta = 0; geodesic is the metric
+  metrics:
+    contact_cutoff: 8.0
+    contact_sequence_separation: 3
+    clash_min_ca_distance: 3.6      # below the audited 3.67-4.01 A bonded CA-CA

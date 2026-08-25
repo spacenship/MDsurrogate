@@ -1,0 +1,88 @@
+# Phase 1 small configuration.
+#
+# This is the final model family at a small size -- not a prototype. Phase 2
+# grows `encoder.num_cycles` and the irreps multiplicities and adds transition
+# modules on top; it does not replace any class here.
+#
+# Values marked "audited" were measured on real mdCATH shards, not guessed; see
+# docs/phase1_hierarchy_and_contracts.md.
+
+data:
+  data_dir: data
+  esm2_cache_dir: esm2_cache
+  quarantine_path: mdcath_force_quarantine.json   # forces==coords trajectories
+  represented_scope: heavy_atom     # deployable V1; all_atom also supported
+  temperatures: null                # null = all five (320/348/379/413/450 K)
+  replicas: null                    # null = all five
+  frames_per_trajectory: 4
+  ps_per_frame: 1000.0             # 1 ns/frame, from the mdCATH paper
+                                    # (not in the files); Phase 2 lags use this
+  max_domains: 40                   # mini-subset run; null for everything
+  max_residues: 250
+  val_fraction: 0.2
+  split_seed: 0                     # split is BY DOMAIN, before frame enumeration
+  allow_fake_plm: false             # true only for tests, never for a result
+  check_pbc: true
+  batch_size: 2
+
+model:
+  target_scope: heavy_atom
+  predict_hidden_force: null        # null = infer from target_scope
+                                    # heavy_atom -> true, because mdCATH stores
+                                    # hydrogens so the residual is identifiable
+                                    # (measured 0.58-0.71 of the heavy-only force)
+  use_energy_branch: true
+  isotropic_uncertainty: false
+  validate_inputs: true
+
+  encoder:
+    num_cycles: 2                   # atom + backbone block per cycle
+    num_radial_basis: 8
+    plm_projection_dim: 128
+    residue_scalar_channels: 64
+    atom_cutoff: 5.0                # audited: 21.4 heavy neighbours/atom
+    backbone_cutoff: 13.0           # audited: p95 radius of CA kNN(16)
+    atom_avg_neighbors: 21.4        # audited
+    backbone_avg_neighbors: 20.0    # 16 spatial + ~4 sequence
+    use_plm: true
+    use_temperature: true
+    use_atom_branch: true
+    use_backbone_branch: true
+    use_body_order_3: true          # explicit TensorSquare: correlation order 3
+    irreps:
+      lmax: 2
+      scalar_channels: 64
+      vector_channels: 16
+      tensor_channels: 8
+
+  graph:
+    sequence_max_offset: 2          # +-1 and +-2, chain-break aware
+    require_contiguous_resid: true  # a numbering gap is a real break
+    residue_knn: 16                 # audited: mean CA radius 10.2 A
+    residue_cutoff: null
+    atom_cutoff: 5.0
+    atom_include_inter_residue: true
+    bond_tolerance: 1.3             # reproduces the PSF bond graph exactly
+    lmax: 2
+
+train:
+  seed: 0
+  learning_rate: 1.0e-3
+  weight_decay: 0.0
+  max_steps: 500
+  eval_every: 100
+  log_every: 20
+  grad_clip: 10.0
+  normalizer_batches: 8             # fitted on the TRAIN split only
+  device: cuda:0
+
+  # Untuned on purpose. The three NLL terms are the objective; the rest are
+  # regularisers and are deliberately small.
+  loss_weights:
+    atom_force: 1.0
+    residue_force: 1.0
+    torque: 1.0
+    hidden_force: 1.0
+    aggregation_consistency: 0.1
+    conservative_force: 0.1
+    energy_gauge: 1.0e-4

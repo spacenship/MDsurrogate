@@ -1,0 +1,4007 @@
+{
+ "repo_id": "compsciencelab/mdCATH",
+ "seed": 0,
+ "num_domains": 1000,
+ "shards": [
+  {
+   "path": "data/mdcath_dataset_2y2mA03.h5",
+   "size": 322374980
+  },
+  {
+   "path": "data/mdcath_dataset_2m2lA00.h5",
+   "size": 364107800
+  },
+  {
+   "path": "data/mdcath_dataset_1s5jA04.h5",
+   "size": 300782708
+  },
+  {
+   "path": "data/mdcath_dataset_2joeA01.h5",
+   "size": 668243604
+  },
+  {
+   "path": "data/mdcath_dataset_2mgwA00.h5",
+   "size": 264830644
+  },
+  {
+   "path": "data/mdcath_dataset_2c1lA02.h5",
+   "size": 792257760
+  },
+  {
+   "path": "data/mdcath_dataset_2phcB02.h5",
+   "size": 698999424
+  },
+  {
+   "path": "data/mdcath_dataset_4v1ap00.h5",
+   "size": 444472940
+  },
+  {
+   "path": "data/mdcath_dataset_2y94A03.h5",
+   "size": 395805968
+  },
+  {
+   "path": "data/mdcath_dataset_2ib0A01.h5",
+   "size": 650662960
+  },
+  {
+   "path": "data/mdcath_dataset_2dskA00.h5",
+   "size": 1523783700
+  },
+  {
+   "path": "data/mdcath_dataset_4kfcB02.h5",
+   "size": 480894912
+  },
+  {
+   "path": "data/mdcath_dataset_3khbB00.h5",
+   "size": 1011417692
+  },
+  {
+   "path": "data/mdcath_dataset_2kkuA00.h5",
+   "size": 773626088
+  },
+  {
+   "path": "data/mdcath_dataset_5bqpD00.h5",
+   "size": 887834636
+  },
+  {
+   "path": "data/mdcath_dataset_4uuwB02.h5",
+   "size": 371032292
+  },
+  {
+   "path": "data/mdcath_dataset_1i5gA00.h5",
+   "size": 672451732
+  },
+  {
+   "path": "data/mdcath_dataset_3x1lB03.h5",
+   "size": 521487540
+  },
+  {
+   "path": "data/mdcath_dataset_1wj7A01.h5",
+   "size": 275845452
+  },
+  {
+   "path": "data/mdcath_dataset_3ztdF01.h5",
+   "size": 423672052
+  },
+  {
+   "path": "data/mdcath_dataset_4n4uB00.h5",
+   "size": 1457159436
+  },
+  {
+   "path": "data/mdcath_dataset_3rwnB00.h5",
+   "size": 759875316
+  },
+  {
+   "path": "data/mdcath_dataset_1j0tA00.h5",
+   "size": 377212704
+  },
+  {
+   "path": "data/mdcath_dataset_1fcdA03.h5",
+   "size": 329010636
+  },
+  {
+   "path": "data/mdcath_dataset_1sxjE02.h5",
+   "size": 302316584
+  },
+  {
+   "path": "data/mdcath_dataset_1evlA01.h5",
+   "size": 1371821704
+  },
+  {
+   "path": "data/mdcath_dataset_3eyaA02.h5",
+   "size": 761949380
+  },
+  {
+   "path": "data/mdcath_dataset_3keyA01.h5",
+   "size": 445453032
+  },
+  {
+   "path": "data/mdcath_dataset_1dglA00.h5",
+   "size": 1057236508
+  },
+  {
+   "path": "data/mdcath_dataset_3wicA02.h5",
+   "size": 933180960
+  },
+  {
+   "path": "data/mdcath_dataset_1pjqA01.h5",
+   "size": 510580312
+  },
+  {
+   "path": "data/mdcath_dataset_2ynqA00.h5",
+   "size": 751420240
+  },
+  {
+   "path": "data/mdcath_dataset_2cpbA00.h5",
+   "size": 261402820
+  },
+  {
+   "path": "data/mdcath_dataset_1dj8A00.h5",
+   "size": 366054356
+  },
+  {
+   "path": "data/mdcath_dataset_3oy2A02.h5",
+   "size": 1191112036
+  },
+  {
+   "path": "data/mdcath_dataset_2hzhA03.h5",
+   "size": 888135079
+  },
+  {
+   "path": "data/mdcath_dataset_2x8nA01.h5",
+   "size": 516963792
+  },
+  {
+   "path": "data/mdcath_dataset_1cttA02.h5",
+   "size": 510020448
+  },
+  {
+   "path": "data/mdcath_dataset_4m7rA00.h5",
+   "size": 872666284
+  },
+  {
+   "path": "data/mdcath_dataset_3e6uA00.h5",
+   "size": 2035232184
+  },
+  {
+   "path": "data/mdcath_dataset_2zyzC00.h5",
+   "size": 523818268
+  },
+  {
+   "path": "data/mdcath_dataset_3s6pA03.h5",
+   "size": 674197452
+  },
+  {
+   "path": "data/mdcath_dataset_3tp9A02.h5",
+   "size": 551360516
+  },
+  {
+   "path": "data/mdcath_dataset_1b97A00.h5",
+   "size": 1174854124
+  },
+  {
+   "path": "data/mdcath_dataset_5swuA00.h5",
+   "size": 1188652656
+  },
+  {
+   "path": "data/mdcath_dataset_4rr5A02.h5",
+   "size": 304008156
+  },
+  {
+   "path": "data/mdcath_dataset_2w2hA02.h5",
+   "size": 644778732
+  },
+  {
+   "path": "data/mdcath_dataset_1if1B00.h5",
+   "size": 509875384
+  },
+  {
+   "path": "data/mdcath_dataset_2jokA01.h5",
+   "size": 824380096
+  },
+  {
+   "path": "data/mdcath_dataset_2k9mA00.h5",
+   "size": 710652716
+  },
+  {
+   "path": "data/mdcath_dataset_2mhpA00.h5",
+   "size": 470267896
+  },
+  {
+   "path": "data/mdcath_dataset_4ci8A02.h5",
+   "size": 1417188384
+  },
+  {
+   "path": "data/mdcath_dataset_4aj9A02.h5",
+   "size": 494649188
+  },
+  {
+   "path": "data/mdcath_dataset_3bd1A00.h5",
+   "size": 335262912
+  },
+  {
+   "path": "data/mdcath_dataset_1jqkA02.h5",
+   "size": 761320520
+  },
+  {
+   "path": "data/mdcath_dataset_4lryA01.h5",
+   "size": 676566456
+  },
+  {
+   "path": "data/mdcath_dataset_3do7A02.h5",
+   "size": 540511904
+  },
+  {
+   "path": "data/mdcath_dataset_4jmqA02.h5",
+   "size": 426099736
+  },
+  {
+   "path": "data/mdcath_dataset_3w6bB00.h5",
+   "size": 735803024
+  },
+  {
+   "path": "data/mdcath_dataset_1ay0A01.h5",
+   "size": 1475901112
+  },
+  {
+   "path": "data/mdcath_dataset_1gdjA00.h5",
+   "size": 706114128
+  },
+  {
+   "path": "data/mdcath_dataset_4wj4A03.h5",
+   "size": 690679316
+  },
+  {
+   "path": "data/mdcath_dataset_3ph9A00.h5",
+   "size": 622951672
+  },
+  {
+   "path": "data/mdcath_dataset_1r9lA02.h5",
+   "size": 644699228
+  },
+  {
+   "path": "data/mdcath_dataset_4a17T00.h5",
+   "size": 334000312
+  },
+  {
+   "path": "data/mdcath_dataset_3rguB00.h5",
+   "size": 414309184
+  },
+  {
+   "path": "data/mdcath_dataset_1z6tA04.h5",
+   "size": 422049236
+  },
+  {
+   "path": "data/mdcath_dataset_3l1xA01.h5",
+   "size": 392364140
+  },
+  {
+   "path": "data/mdcath_dataset_2n3eA01.h5",
+   "size": 557063072
+  },
+  {
+   "path": "data/mdcath_dataset_1cukA01.h5",
+   "size": 314770564
+  },
+  {
+   "path": "data/mdcath_dataset_3i5pA03.h5",
+   "size": 1252663468
+  },
+  {
+   "path": "data/mdcath_dataset_3tdgA01.h5",
+   "size": 344280916
+  },
+  {
+   "path": "data/mdcath_dataset_2ivfC00.h5",
+   "size": 1060390300
+  },
+  {
+   "path": "data/mdcath_dataset_2nu8B02.h5",
+   "size": 384795092
+  },
+  {
+   "path": "data/mdcath_dataset_2qc7A02.h5",
+   "size": 534256680
+  },
+  {
+   "path": "data/mdcath_dataset_2i54A02.h5",
+   "size": 558313780
+  },
+  {
+   "path": "data/mdcath_dataset_4nx0A01.h5",
+   "size": 1406360332
+  },
+  {
+   "path": "data/mdcath_dataset_2vunA02.h5",
+   "size": 1239247020
+  },
+  {
+   "path": "data/mdcath_dataset_1xwmA00.h5",
+   "size": 965961860
+  },
+  {
+   "path": "data/mdcath_dataset_1r89A02.h5",
+   "size": 628318620
+  },
+  {
+   "path": "data/mdcath_dataset_3ihjA03.h5",
+   "size": 1124142428
+  },
+  {
+   "path": "data/mdcath_dataset_1qcxA00.h5",
+   "size": 1549166659
+  },
+  {
+   "path": "data/mdcath_dataset_1vq8W02.h5",
+   "size": 251312892
+  },
+  {
+   "path": "data/mdcath_dataset_1g5aA03.h5",
+   "size": 350055160
+  },
+  {
+   "path": "data/mdcath_dataset_3vk5B00.h5",
+   "size": 1151268516
+  },
+  {
+   "path": "data/mdcath_dataset_4incB00.h5",
+   "size": 543521180
+  },
+  {
+   "path": "data/mdcath_dataset_2d7iA02.h5",
+   "size": 756377356
+  },
+  {
+   "path": "data/mdcath_dataset_4b96A00.h5",
+   "size": 731581744
+  },
+  {
+   "path": "data/mdcath_dataset_3jc2200.h5",
+   "size": 316792276
+  },
+  {
+   "path": "data/mdcath_dataset_1ztdA00.h5",
+   "size": 597123684
+  },
+  {
+   "path": "data/mdcath_dataset_3nytA02.h5",
+   "size": 581754344
+  },
+  {
+   "path": "data/mdcath_dataset_3gk0A00.h5",
+   "size": 1260711792
+  },
+  {
+   "path": "data/mdcath_dataset_2uvaG03.h5",
+   "size": 575245276
+  },
+  {
+   "path": "data/mdcath_dataset_1wvkA00.h5",
+   "size": 397302276
+  },
+  {
+   "path": "data/mdcath_dataset_3kz3A00.h5",
+   "size": 410752772
+  },
+  {
+   "path": "data/mdcath_dataset_3b0xA05.h5",
+   "size": 1323294160
+  },
+  {
+   "path": "data/mdcath_dataset_2wu5D00.h5",
+   "size": 564282060
+  },
+  {
+   "path": "data/mdcath_dataset_1pz4A00.h5",
+   "size": 532802248
+  },
+  {
+   "path": "data/mdcath_dataset_1otvA00.h5",
+   "size": 1198048052
+  },
+  {
+   "path": "data/mdcath_dataset_1a9xB01.h5",
+   "size": 679026656
+  },
+  {
+   "path": "data/mdcath_dataset_3dgpA00.h5",
+   "size": 348329652
+  },
+  {
+   "path": "data/mdcath_dataset_1ve2B02.h5",
+   "size": 526237916
+  },
+  {
+   "path": "data/mdcath_dataset_2eq5A02.h5",
+   "size": 516586712
+  },
+  {
+   "path": "data/mdcath_dataset_3vaxA02.h5",
+   "size": 450197232
+  },
+  {
+   "path": "data/mdcath_dataset_4ii1A02.h5",
+   "size": 268596548
+  },
+  {
+   "path": "data/mdcath_dataset_2wscN00.h5",
+   "size": 439115328
+  },
+  {
+   "path": "data/mdcath_dataset_1gxtA00.h5",
+   "size": 422936660
+  },
+  {
+   "path": "data/mdcath_dataset_1lshB00.h5",
+   "size": 824306844
+  },
+  {
+   "path": "data/mdcath_dataset_4jgsE00.h5",
+   "size": 445641212
+  },
+  {
+   "path": "data/mdcath_dataset_3dmgA01.h5",
+   "size": 928239320
+  },
+  {
+   "path": "data/mdcath_dataset_4fquA02.h5",
+   "size": 589774940
+  },
+  {
+   "path": "data/mdcath_dataset_3vpzA02.h5",
+   "size": 926021500
+  },
+  {
+   "path": "data/mdcath_dataset_1rwrA00.h5",
+   "size": 1252908124
+  },
+  {
+   "path": "data/mdcath_dataset_1qzgA00.h5",
+   "size": 811680764
+  },
+  {
+   "path": "data/mdcath_dataset_2bgoA00.h5",
+   "size": 513310596
+  },
+  {
+   "path": "data/mdcath_dataset_1mnmC00.h5",
+   "size": 394138848
+  },
+  {
+   "path": "data/mdcath_dataset_2co5A00.h5",
+   "size": 526524644
+  },
+  {
+   "path": "data/mdcath_dataset_2akkA00.h5",
+   "size": 348199844
+  },
+  {
+   "path": "data/mdcath_dataset_1fjrA02.h5",
+   "size": 595594840
+  },
+  {
+   "path": "data/mdcath_dataset_1t0iA00.h5",
+   "size": 869873148
+  },
+  {
+   "path": "data/mdcath_dataset_1irzA00.h5",
+   "size": 322735028
+  },
+  {
+   "path": "data/mdcath_dataset_1ik7A00.h5",
+   "size": 265497140
+  },
+  {
+   "path": "data/mdcath_dataset_4p2cA01.h5",
+   "size": 702691716
+  },
+  {
+   "path": "data/mdcath_dataset_4fvmA02.h5",
+   "size": 545865192
+  },
+  {
+   "path": "data/mdcath_dataset_1w66A01.h5",
+   "size": 932801784
+  },
+  {
+   "path": "data/mdcath_dataset_1jqoA03.h5",
+   "size": 651719296
+  },
+  {
+   "path": "data/mdcath_dataset_2lf0A01.h5",
+   "size": 326098028
+  },
+  {
+   "path": "data/mdcath_dataset_2looA02.h5",
+   "size": 405495984
+  },
+  {
+   "path": "data/mdcath_dataset_4l4qA03.h5",
+   "size": 613691176
+  },
+  {
+   "path": "data/mdcath_dataset_3fi9A02.h5",
+   "size": 837845404
+  },
+  {
+   "path": "data/mdcath_dataset_2kmcA00.h5",
+   "size": 546309836
+  },
+  {
+   "path": "data/mdcath_dataset_4lbhA00.h5",
+   "size": 449329692
+  },
+  {
+   "path": "data/mdcath_dataset_4meiA00.h5",
+   "size": 736912380
+  },
+  {
+   "path": "data/mdcath_dataset_3t5tA02.h5",
+   "size": 928410164
+  },
+  {
+   "path": "data/mdcath_dataset_1rl0A02.h5",
+   "size": 364095116
+  },
+  {
+   "path": "data/mdcath_dataset_1mjdA00.h5",
+   "size": 534673432
+  },
+  {
+   "path": "data/mdcath_dataset_1ryuA00.h5",
+   "size": 566831924
+  },
+  {
+   "path": "data/mdcath_dataset_2gloA00.h5",
+   "size": 331172824
+  },
+  {
+   "path": "data/mdcath_dataset_3o3mB02.h5",
+   "size": 622075876
+  },
+  {
+   "path": "data/mdcath_dataset_3p9aF00.h5",
+   "size": 655553612
+  },
+  {
+   "path": "data/mdcath_dataset_3klqA01.h5",
+   "size": 563977752
+  },
+  {
+   "path": "data/mdcath_dataset_3ppsA02.h5",
+   "size": 876589440
+  },
+  {
+   "path": "data/mdcath_dataset_1mmoB00.h5",
+   "size": 1754009716
+  },
+  {
+   "path": "data/mdcath_dataset_2it1A03.h5",
+   "size": 318639396
+  },
+  {
+   "path": "data/mdcath_dataset_1kvdA00.h5",
+   "size": 269739996
+  },
+  {
+   "path": "data/mdcath_dataset_4q5wA02.h5",
+   "size": 449750904
+  },
+  {
+   "path": "data/mdcath_dataset_2jswA00.h5",
+   "size": 878790848
+  },
+  {
+   "path": "data/mdcath_dataset_2l9fA00.h5",
+   "size": 507684396
+  },
+  {
+   "path": "data/mdcath_dataset_5ekdA02.h5",
+   "size": 534065320
+  },
+  {
+   "path": "data/mdcath_dataset_2plcA00.h5",
+   "size": 1437539156
+  },
+  {
+   "path": "data/mdcath_dataset_4c0aA02.h5",
+   "size": 661044964
+  },
+  {
+   "path": "data/mdcath_dataset_2zxdA02.h5",
+   "size": 475017368
+  },
+  {
+   "path": "data/mdcath_dataset_2c42A05.h5",
+   "size": 538861184
+  },
+  {
+   "path": "data/mdcath_dataset_2g7hA01.h5",
+   "size": 432233460
+  },
+  {
+   "path": "data/mdcath_dataset_3au4A02.h5",
+   "size": 464098228
+  },
+  {
+   "path": "data/mdcath_dataset_3ha4B00.h5",
+   "size": 621604228
+  },
+  {
+   "path": "data/mdcath_dataset_2z1kA02.h5",
+   "size": 426381008
+  },
+  {
+   "path": "data/mdcath_dataset_2yorA00.h5",
+   "size": 1549590680
+  },
+  {
+   "path": "data/mdcath_dataset_2dznF00.h5",
+   "size": 356666464
+  },
+  {
+   "path": "data/mdcath_dataset_2qk4A04.h5",
+   "size": 461242096
+  },
+  {
+   "path": "data/mdcath_dataset_1t17A00.h5",
+   "size": 700699088
+  },
+  {
+   "path": "data/mdcath_dataset_2x3mA00.h5",
+   "size": 866141924
+  },
+  {
+   "path": "data/mdcath_dataset_4cu5A00.h5",
+   "size": 426756200
+  },
+  {
+   "path": "data/mdcath_dataset_1bu6O01.h5",
+   "size": 1171077424
+  },
+  {
+   "path": "data/mdcath_dataset_1vx7H01.h5",
+   "size": 427770592
+  },
+  {
+   "path": "data/mdcath_dataset_1zxqA02.h5",
+   "size": 486207408
+  },
+  {
+   "path": "data/mdcath_dataset_1cjyA01.h5",
+   "size": 577673652
+  },
+  {
+   "path": "data/mdcath_dataset_4hvzA02.h5",
+   "size": 531691820
+  },
+  {
+   "path": "data/mdcath_dataset_2qi2A03.h5",
+   "size": 499642468
+  },
+  {
+   "path": "data/mdcath_dataset_2yngB03.h5",
+   "size": 416175288
+  },
+  {
+   "path": "data/mdcath_dataset_2ft0A00.h5",
+   "size": 1101883276
+  },
+  {
+   "path": "data/mdcath_dataset_2dqlA00.h5",
+   "size": 607852592
+  },
+  {
+   "path": "data/mdcath_dataset_4o6yB00.h5",
+   "size": 1096382192
+  },
+  {
+   "path": "data/mdcath_dataset_2hoxA01.h5",
+   "size": 505581180
+  },
+  {
+   "path": "data/mdcath_dataset_2vk9A01.h5",
+   "size": 487770792
+  },
+  {
+   "path": "data/mdcath_dataset_1in0A02.h5",
+   "size": 446738948
+  },
+  {
+   "path": "data/mdcath_dataset_2incC00.h5",
+   "size": 451449384
+  },
+  {
+   "path": "data/mdcath_dataset_2yinA03.h5",
+   "size": 655322484
+  },
+  {
+   "path": "data/mdcath_dataset_3oq3B01.h5",
+   "size": 673647388
+  },
+  {
+   "path": "data/mdcath_dataset_2x45A00.h5",
+   "size": 717080156
+  },
+  {
+   "path": "data/mdcath_dataset_1ek4A01.h5",
+   "size": 1095826332
+  },
+  {
+   "path": "data/mdcath_dataset_5bmoC00.h5",
+   "size": 1045078396
+  },
+  {
+   "path": "data/mdcath_dataset_2jugA01.h5",
+   "size": 281000328
+  },
+  {
+   "path": "data/mdcath_dataset_3ifuA02.h5",
+   "size": 585803308
+  },
+  {
+   "path": "data/mdcath_dataset_1g4wR02.h5",
+   "size": 1009980576
+  },
+  {
+   "path": "data/mdcath_dataset_3wnzA04.h5",
+   "size": 462992596
+  },
+  {
+   "path": "data/mdcath_dataset_1kafD00.h5",
+   "size": 506365280
+  },
+  {
+   "path": "data/mdcath_dataset_4g92B00.h5",
+   "size": 472779980
+  },
+  {
+   "path": "data/mdcath_dataset_2wp0D00.h5",
+   "size": 440685180
+  },
+  {
+   "path": "data/mdcath_dataset_3d9xA01.h5",
+   "size": 244390980
+  },
+  {
+   "path": "data/mdcath_dataset_2q2tA03.h5",
+   "size": 570854700
+  },
+  {
+   "path": "data/mdcath_dataset_2xmoA02.h5",
+   "size": 446689636
+  },
+  {
+   "path": "data/mdcath_dataset_3mplA02.h5",
+   "size": 458292912
+  },
+  {
+   "path": "data/mdcath_dataset_1gsaA03.h5",
+   "size": 307963924
+  },
+  {
+   "path": "data/mdcath_dataset_5brcC00.h5",
+   "size": 1004462996
+  },
+  {
+   "path": "data/mdcath_dataset_2e4tA02.h5",
+   "size": 1940495881
+  },
+  {
+   "path": "data/mdcath_dataset_1aamA02.h5",
+   "size": 1222848464
+  },
+  {
+   "path": "data/mdcath_dataset_3ieyB00.h5",
+   "size": 823331288
+  },
+  {
+   "path": "data/mdcath_dataset_1j4sA00.h5",
+   "size": 666246744
+  },
+  {
+   "path": "data/mdcath_dataset_4da2A01.h5",
+   "size": 388763912
+  },
+  {
+   "path": "data/mdcath_dataset_2o8lA02.h5",
+   "size": 506544016
+  },
+  {
+   "path": "data/mdcath_dataset_3a1kA01.h5",
+   "size": 268987540
+  },
+  {
+   "path": "data/mdcath_dataset_2l3yA00.h5",
+   "size": 976940740
+  },
+  {
+   "path": "data/mdcath_dataset_2kdoA03.h5",
+   "size": 447036996
+  },
+  {
+   "path": "data/mdcath_dataset_2p7vB00.h5",
+   "size": 380957468
+  },
+  {
+   "path": "data/mdcath_dataset_2fhzA00.h5",
+   "size": 559972412
+  },
+  {
+   "path": "data/mdcath_dataset_2jyeA01.h5",
+   "size": 293088176
+  },
+  {
+   "path": "data/mdcath_dataset_3oreA01.h5",
+   "size": 356807156
+  },
+  {
+   "path": "data/mdcath_dataset_2v9kA03.h5",
+   "size": 672782920
+  },
+  {
+   "path": "data/mdcath_dataset_2kivA02.h5",
+   "size": 319335692
+  },
+  {
+   "path": "data/mdcath_dataset_2rpaA00.h5",
+   "size": 420291304
+  },
+  {
+   "path": "data/mdcath_dataset_2jlqA02.h5",
+   "size": 849788620
+  },
+  {
+   "path": "data/mdcath_dataset_1kwgA02.h5",
+   "size": 929665844
+  },
+  {
+   "path": "data/mdcath_dataset_3x0uB01.h5",
+   "size": 1270214328
+  },
+  {
+   "path": "data/mdcath_dataset_4j2nC00.h5",
+   "size": 216655804
+  },
+  {
+   "path": "data/mdcath_dataset_3bmzA00.h5",
+   "size": 942803128
+  },
+  {
+   "path": "data/mdcath_dataset_1nd4A02.h5",
+   "size": 779366540
+  },
+  {
+   "path": "data/mdcath_dataset_2onkC00.h5",
+   "size": 1261636852
+  },
+  {
+   "path": "data/mdcath_dataset_4joxA00.h5",
+   "size": 530800020
+  },
+  {
+   "path": "data/mdcath_dataset_2gauA02.h5",
+   "size": 423004192
+  },
+  {
+   "path": "data/mdcath_dataset_1b9nA03.h5",
+   "size": 316184260
+  },
+  {
+   "path": "data/mdcath_dataset_2jbrA03.h5",
+   "size": 898375608
+  },
+  {
+   "path": "data/mdcath_dataset_2ed8A01.h5",
+   "size": 439625692
+  },
+  {
+   "path": "data/mdcath_dataset_4bgoA00.h5",
+   "size": 1154353472
+  },
+  {
+   "path": "data/mdcath_dataset_2gmwA00.h5",
+   "size": 942177036
+  },
+  {
+   "path": "data/mdcath_dataset_1vw4M01.h5",
+   "size": 642987220
+  },
+  {
+   "path": "data/mdcath_dataset_2f2hA04.h5",
+   "size": 547026136
+  },
+  {
+   "path": "data/mdcath_dataset_4b28A01.h5",
+   "size": 935108480
+  },
+  {
+   "path": "data/mdcath_dataset_3c8eB01.h5",
+   "size": 656752548
+  },
+  {
+   "path": "data/mdcath_dataset_1n08A00.h5",
+   "size": 747690900
+  },
+  {
+   "path": "data/mdcath_dataset_2hvrA03.h5",
+   "size": 463195496
+  },
+  {
+   "path": "data/mdcath_dataset_1adnA00.h5",
+   "size": 433485999
+  },
+  {
+   "path": "data/mdcath_dataset_1j8cA00.h5",
+   "size": 471984360
+  },
+  {
+   "path": "data/mdcath_dataset_2zr9A02.h5",
+   "size": 312052996
+  },
+  {
+   "path": "data/mdcath_dataset_2w9mA04.h5",
+   "size": 260369056
+  },
+  {
+   "path": "data/mdcath_dataset_1sxdA00.h5",
+   "size": 446997772
+  },
+  {
+   "path": "data/mdcath_dataset_2xnrA00.h5",
+   "size": 408121328
+  },
+  {
+   "path": "data/mdcath_dataset_1whqA01.h5",
+   "size": 346607796
+  },
+  {
+   "path": "data/mdcath_dataset_1w6kA03.h5",
+   "size": 1340438296
+  },
+  {
+   "path": "data/mdcath_dataset_5b00A00.h5",
+   "size": 1252893744
+  },
+  {
+   "path": "data/mdcath_dataset_2vklA00.h5",
+   "size": 395506232
+  },
+  {
+   "path": "data/mdcath_dataset_2jfqA02.h5",
+   "size": 610723388
+  },
+  {
+   "path": "data/mdcath_dataset_1uh4A02.h5",
+   "size": 1902241040
+  },
+  {
+   "path": "data/mdcath_dataset_2ntkB00.h5",
+   "size": 989287252
+  },
+  {
+   "path": "data/mdcath_dataset_2ei9A00.h5",
+   "size": 1048784956
+  },
+  {
+   "path": "data/mdcath_dataset_1gyxA01.h5",
+   "size": 305859940
+  },
+  {
+   "path": "data/mdcath_dataset_2ejaA00.h5",
+   "size": 1831271800
+  },
+  {
+   "path": "data/mdcath_dataset_2fhfA01.h5",
+   "size": 633818084
+  },
+  {
+   "path": "data/mdcath_dataset_1m3yA02.h5",
+   "size": 939871376
+  },
+  {
+   "path": "data/mdcath_dataset_3c8tA01.h5",
+   "size": 486549344
+  },
+  {
+   "path": "data/mdcath_dataset_1grjA01.h5",
+   "size": 355394824
+  },
+  {
+   "path": "data/mdcath_dataset_2nteA02.h5",
+   "size": 514926540
+  },
+  {
+   "path": "data/mdcath_dataset_1jocA01.h5",
+   "size": 304243300
+  },
+  {
+   "path": "data/mdcath_dataset_2zihC00.h5",
+   "size": 1515648464
+  },
+  {
+   "path": "data/mdcath_dataset_1wp9B03.h5",
+   "size": 631865972
+  },
+  {
+   "path": "data/mdcath_dataset_4xc7B01.h5",
+   "size": 627776820
+  },
+  {
+   "path": "data/mdcath_dataset_1or4B00.h5",
+   "size": 784279464
+  },
+  {
+   "path": "data/mdcath_dataset_1c1dA02.h5",
+   "size": 842089764
+  },
+  {
+   "path": "data/mdcath_dataset_2jpeA00.h5",
+   "size": 660558220
+  },
+  {
+   "path": "data/mdcath_dataset_4bwsF00.h5",
+   "size": 339072520
+  },
+  {
+   "path": "data/mdcath_dataset_2hbaA00.h5",
+   "size": 278639764
+  },
+  {
+   "path": "data/mdcath_dataset_2x4dA02.h5",
+   "size": 526576544
+  },
+  {
+   "path": "data/mdcath_dataset_1gjsA00.h5",
+   "size": 305429196
+  },
+  {
+   "path": "data/mdcath_dataset_2y2zA02.h5",
+   "size": 871375860
+  },
+  {
+   "path": "data/mdcath_dataset_2fjrB02.h5",
+   "size": 612285236
+  },
+  {
+   "path": "data/mdcath_dataset_5jabA00.h5",
+   "size": 557418232
+  },
+  {
+   "path": "data/mdcath_dataset_1c80A00.h5",
+   "size": 909183716
+  },
+  {
+   "path": "data/mdcath_dataset_4bx9C00.h5",
+   "size": 493660064
+  },
+  {
+   "path": "data/mdcath_dataset_3ajyA00.h5",
+   "size": 689218224
+  },
+  {
+   "path": "data/mdcath_dataset_3kewA01.h5",
+   "size": 444057100
+  },
+  {
+   "path": "data/mdcath_dataset_3f8tA02.h5",
+   "size": 406836852
+  },
+  {
+   "path": "data/mdcath_dataset_2cw7A03.h5",
+   "size": 894449408
+  },
+  {
+   "path": "data/mdcath_dataset_1jsuC00.h5",
+   "size": 345057296
+  },
+  {
+   "path": "data/mdcath_dataset_1dgnA00.h5",
+   "size": 414339660
+  },
+  {
+   "path": "data/mdcath_dataset_1nyaA00.h5",
+   "size": 788055760
+  },
+  {
+   "path": "data/mdcath_dataset_1inlC02.h5",
+   "size": 318404584
+  },
+  {
+   "path": "data/mdcath_dataset_2zuoA09.h5",
+   "size": 345539432
+  },
+  {
+   "path": "data/mdcath_dataset_3fxtA00.h5",
+   "size": 474884428
+  },
+  {
+   "path": "data/mdcath_dataset_3v7dD01.h5",
+   "size": 562087084
+  },
+  {
+   "path": "data/mdcath_dataset_2ix0A02.h5",
+   "size": 395453824
+  },
+  {
+   "path": "data/mdcath_dataset_4u2vA02.h5",
+   "size": 350748012
+  },
+  {
+   "path": "data/mdcath_dataset_2ksdA00.h5",
+   "size": 419821016
+  },
+  {
+   "path": "data/mdcath_dataset_4aukA01.h5",
+   "size": 402682904
+  },
+  {
+   "path": "data/mdcath_dataset_2yveB00.h5",
+   "size": 896119108
+  },
+  {
+   "path": "data/mdcath_dataset_3b0dC00.h5",
+   "size": 376709032
+  },
+  {
+   "path": "data/mdcath_dataset_2xn7A02.h5",
+   "size": 501470532
+  },
+  {
+   "path": "data/mdcath_dataset_3jr1A02.h5",
+   "size": 1092011768
+  },
+  {
+   "path": "data/mdcath_dataset_1gxcA00.h5",
+   "size": 565807152
+  },
+  {
+   "path": "data/mdcath_dataset_2ciuA00.h5",
+   "size": 605855592
+  },
+  {
+   "path": "data/mdcath_dataset_3wdpP00.h5",
+   "size": 2449532780
+  },
+  {
+   "path": "data/mdcath_dataset_3g2bA00.h5",
+   "size": 483759756
+  },
+  {
+   "path": "data/mdcath_dataset_2fsfB03.h5",
+   "size": 1028903268
+  },
+  {
+   "path": "data/mdcath_dataset_3j7aF02.h5",
+   "size": 287758928
+  },
+  {
+   "path": "data/mdcath_dataset_1fwxA01.h5",
+   "size": 2113274528
+  },
+  {
+   "path": "data/mdcath_dataset_2clsA00.h5",
+   "size": 936401184
+  },
+  {
+   "path": "data/mdcath_dataset_2xzmO02.h5",
+   "size": 378979180
+  },
+  {
+   "path": "data/mdcath_dataset_4k6nA02.h5",
+   "size": 697327312
+  },
+  {
+   "path": "data/mdcath_dataset_1c16A01.h5",
+   "size": 747286896
+  },
+  {
+   "path": "data/mdcath_dataset_2k5gA01.h5",
+   "size": 940082316
+  },
+  {
+   "path": "data/mdcath_dataset_1frmA00.h5",
+   "size": 484250408
+  },
+  {
+   "path": "data/mdcath_dataset_4jehA04.h5",
+   "size": 617190244
+  },
+  {
+   "path": "data/mdcath_dataset_3u61D03.h5",
+   "size": 478003744
+  },
+  {
+   "path": "data/mdcath_dataset_2llvA00.h5",
+   "size": 357521960
+  },
+  {
+   "path": "data/mdcath_dataset_1qltA03.h5",
+   "size": 1099990592
+  },
+  {
+   "path": "data/mdcath_dataset_1pjuA01.h5",
+   "size": 284179852
+  },
+  {
+   "path": "data/mdcath_dataset_1yqzA03.h5",
+   "size": 512267792
+  },
+  {
+   "path": "data/mdcath_dataset_3bt4A00.h5",
+   "size": 411505504
+  },
+  {
+   "path": "data/mdcath_dataset_1vphB00.h5",
+   "size": 649106352
+  },
+  {
+   "path": "data/mdcath_dataset_4aidA02.h5",
+   "size": 432129148
+  },
+  {
+   "path": "data/mdcath_dataset_3dohA01.h5",
+   "size": 653777144
+  },
+  {
+   "path": "data/mdcath_dataset_2ewtA00.h5",
+   "size": 366368552
+  },
+  {
+   "path": "data/mdcath_dataset_3ltlB01.h5",
+   "size": 383440072
+  },
+  {
+   "path": "data/mdcath_dataset_1vtmP00.h5",
+   "size": 724029492
+  },
+  {
+   "path": "data/mdcath_dataset_1r55A00.h5",
+   "size": 918993632
+  },
+  {
+   "path": "data/mdcath_dataset_1vw4J01.h5",
+   "size": 735455812
+  },
+  {
+   "path": "data/mdcath_dataset_2joiA00.h5",
+   "size": 510703332
+  },
+  {
+   "path": "data/mdcath_dataset_1u5tB01.h5",
+   "size": 421285156
+  },
+  {
+   "path": "data/mdcath_dataset_5cmbA02.h5",
+   "size": 402595692
+  },
+  {
+   "path": "data/mdcath_dataset_1nm7A00.h5",
+   "size": 299401492
+  },
+  {
+   "path": "data/mdcath_dataset_3girA02.h5",
+   "size": 449973172
+  },
+  {
+   "path": "data/mdcath_dataset_3sluB01.h5",
+   "size": 428679776
+  },
+  {
+   "path": "data/mdcath_dataset_5ac4A02.h5",
+   "size": 1605713840
+  },
+  {
+   "path": "data/mdcath_dataset_4k7bA00.h5",
+   "size": 497897768
+  },
+  {
+   "path": "data/mdcath_dataset_1sm7A00.h5",
+   "size": 516316460
+  },
+  {
+   "path": "data/mdcath_dataset_2m4nA00.h5",
+   "size": 543595876
+  },
+  {
+   "path": "data/mdcath_dataset_1y80A00.h5",
+   "size": 561103164
+  },
+  {
+   "path": "data/mdcath_dataset_1gccA00.h5",
+   "size": 307986308
+  },
+  {
+   "path": "data/mdcath_dataset_2e1tA01.h5",
+   "size": 1205934880
+  },
+  {
+   "path": "data/mdcath_dataset_1um8A02.h5",
+   "size": 475636680
+  },
+  {
+   "path": "data/mdcath_dataset_4h14A00.h5",
+   "size": 1386050776
+  },
+  {
+   "path": "data/mdcath_dataset_2akcA00.h5",
+   "size": 977011476
+  },
+  {
+   "path": "data/mdcath_dataset_4x33A00.h5",
+   "size": 286572660
+  },
+  {
+   "path": "data/mdcath_dataset_1qlhA02.h5",
+   "size": 606136496
+  },
+  {
+   "path": "data/mdcath_dataset_1pvdA03.h5",
+   "size": 944084716
+  },
+  {
+   "path": "data/mdcath_dataset_5a0wD02.h5",
+   "size": 461034300
+  },
+  {
+   "path": "data/mdcath_dataset_2awnC03.h5",
+   "size": 271857236
+  },
+  {
+   "path": "data/mdcath_dataset_5eoxB03.h5",
+   "size": 571017980
+  },
+  {
+   "path": "data/mdcath_dataset_2zxqA03.h5",
+   "size": 834690108
+  },
+  {
+   "path": "data/mdcath_dataset_3zzoA00.h5",
+   "size": 456364036
+  },
+  {
+   "path": "data/mdcath_dataset_1fmjA00.h5",
+   "size": 1656033212
+  },
+  {
+   "path": "data/mdcath_dataset_4njmA02.h5",
+   "size": 820031332
+  },
+  {
+   "path": "data/mdcath_dataset_2k4tA00.h5",
+   "size": 1332823064
+  },
+  {
+   "path": "data/mdcath_dataset_4o6mA01.h5",
+   "size": 581852272
+  },
+  {
+   "path": "data/mdcath_dataset_2p0aA03.h5",
+   "size": 314313628
+  },
+  {
+   "path": "data/mdcath_dataset_4ip2A02.h5",
+   "size": 580680768
+  },
+  {
+   "path": "data/mdcath_dataset_2qenA03.h5",
+   "size": 395495567
+  },
+  {
+   "path": "data/mdcath_dataset_1kuxA00.h5",
+   "size": 775404892
+  },
+  {
+   "path": "data/mdcath_dataset_3k59A02.h5",
+   "size": 368074224
+  },
+  {
+   "path": "data/mdcath_dataset_2e1mC01.h5",
+   "size": 328752296
+  },
+  {
+   "path": "data/mdcath_dataset_2vk9A04.h5",
+   "size": 552828044
+  },
+  {
+   "path": "data/mdcath_dataset_1ga3A00.h5",
+   "size": 525373424
+  },
+  {
+   "path": "data/mdcath_dataset_4c91A01.h5",
+   "size": 777648072
+  },
+  {
+   "path": "data/mdcath_dataset_1vs5E01.h5",
+   "size": 303731132
+  },
+  {
+   "path": "data/mdcath_dataset_3jysA03.h5",
+   "size": 353795268
+  },
+  {
+   "path": "data/mdcath_dataset_2xwtC00.h5",
+   "size": 1097287268
+  },
+  {
+   "path": "data/mdcath_dataset_2i87A03.h5",
+   "size": 400637368
+  },
+  {
+   "path": "data/mdcath_dataset_2o3eA01.h5",
+   "size": 743580752
+  },
+  {
+   "path": "data/mdcath_dataset_1f7uA02.h5",
+   "size": 594063828
+  },
+  {
+   "path": "data/mdcath_dataset_1vi7A01.h5",
+   "size": 596354240
+  },
+  {
+   "path": "data/mdcath_dataset_1vq8L01.h5",
+   "size": 233189140
+  },
+  {
+   "path": "data/mdcath_dataset_1gt7A00.h5",
+   "size": 1242921252
+  },
+  {
+   "path": "data/mdcath_dataset_4tq1A03.h5",
+   "size": 286636124
+  },
+  {
+   "path": "data/mdcath_dataset_1hkvA02.h5",
+   "size": 1141544976
+  },
+  {
+   "path": "data/mdcath_dataset_3hugD00.h5",
+   "size": 299813060
+  },
+  {
+   "path": "data/mdcath_dataset_4aqnA02.h5",
+   "size": 919818544
+  },
+  {
+   "path": "data/mdcath_dataset_2f48A03.h5",
+   "size": 416850208
+  },
+  {
+   "path": "data/mdcath_dataset_2c63A00.h5",
+   "size": 1108280512
+  },
+  {
+   "path": "data/mdcath_dataset_2y1jA02.h5",
+   "size": 621442492
+  },
+  {
+   "path": "data/mdcath_dataset_3a0fA02.h5",
+   "size": 2069502416
+  },
+  {
+   "path": "data/mdcath_dataset_2coiA02.h5",
+   "size": 902762504
+  },
+  {
+   "path": "data/mdcath_dataset_1aorA01.h5",
+   "size": 959359672
+  },
+  {
+   "path": "data/mdcath_dataset_1ximA00.h5",
+   "size": 1778503404
+  },
+  {
+   "path": "data/mdcath_dataset_4cu4A01.h5",
+   "size": 671499192
+  },
+  {
+   "path": "data/mdcath_dataset_1sknP00.h5",
+   "size": 371050500
+  },
+  {
+   "path": "data/mdcath_dataset_1gt6A00.h5",
+   "size": 1192369284
+  },
+  {
+   "path": "data/mdcath_dataset_1yvcA00.h5",
+   "size": 323991640
+  },
+  {
+   "path": "data/mdcath_dataset_1g1xB00.h5",
+   "size": 447530709
+  },
+  {
+   "path": "data/mdcath_dataset_4ifdE00.h5",
+   "size": 1396944120
+  },
+  {
+   "path": "data/mdcath_dataset_3v69B00.h5",
+   "size": 595228948
+  },
+  {
+   "path": "data/mdcath_dataset_2ewfA03.h5",
+   "size": 1249981312
+  },
+  {
+   "path": "data/mdcath_dataset_2lu2A00.h5",
+   "size": 386733344
+  },
+  {
+   "path": "data/mdcath_dataset_4ekuA01.h5",
+   "size": 621722451
+  },
+  {
+   "path": "data/mdcath_dataset_3a4uA00.h5",
+   "size": 1102167916
+  },
+  {
+   "path": "data/mdcath_dataset_5is2A02.h5",
+   "size": 328325556
+  },
+  {
+   "path": "data/mdcath_dataset_4nn5B01.h5",
+   "size": 433368936
+  },
+  {
+   "path": "data/mdcath_dataset_1k32A02.h5",
+   "size": 1620606108
+  },
+  {
+   "path": "data/mdcath_dataset_3b8xA02.h5",
+   "size": 664656500
+  },
+  {
+   "path": "data/mdcath_dataset_2pk0A00.h5",
+   "size": 1189544800
+  },
+  {
+   "path": "data/mdcath_dataset_2pbiA03.h5",
+   "size": 269820812
+  },
+  {
+   "path": "data/mdcath_dataset_2vl7A02.h5",
+   "size": 598282812
+  },
+  {
+   "path": "data/mdcath_dataset_3tt9A00.h5",
+   "size": 1155362068
+  },
+  {
+   "path": "data/mdcath_dataset_1p90A00.h5",
+   "size": 557993224
+  },
+  {
+   "path": "data/mdcath_dataset_3js8A04.h5",
+   "size": 249541540
+  },
+  {
+   "path": "data/mdcath_dataset_4aefA01.h5",
+   "size": 552331600
+  },
+  {
+   "path": "data/mdcath_dataset_3b82A03.h5",
+   "size": 692475496
+  },
+  {
+   "path": "data/mdcath_dataset_3udcA03.h5",
+   "size": 454918924
+  },
+  {
+   "path": "data/mdcath_dataset_2ac1A02.h5",
+   "size": 899968796
+  },
+  {
+   "path": "data/mdcath_dataset_2dhkA01.h5",
+   "size": 531410260
+  },
+  {
+   "path": "data/mdcath_dataset_2c81A01.h5",
+   "size": 1111352308
+  },
+  {
+   "path": "data/mdcath_dataset_1jfwA00.h5",
+   "size": 409817616
+  },
+  {
+   "path": "data/mdcath_dataset_4b4cA02.h5",
+   "size": 509003396
+  },
+  {
+   "path": "data/mdcath_dataset_5l3qB02.h5",
+   "size": 1118869856
+  },
+  {
+   "path": "data/mdcath_dataset_1b4rA00.h5",
+   "size": 338925224
+  },
+  {
+   "path": "data/mdcath_dataset_2zezC00.h5",
+   "size": 729452136
+  },
+  {
+   "path": "data/mdcath_dataset_2v7gA02.h5",
+   "size": 1023579044
+  },
+  {
+   "path": "data/mdcath_dataset_2b3aA00.h5",
+   "size": 418073644
+  },
+  {
+   "path": "data/mdcath_dataset_2k60A01.h5",
+   "size": 393190568
+  },
+  {
+   "path": "data/mdcath_dataset_2rhqB03.h5",
+   "size": 1016699100
+  },
+  {
+   "path": "data/mdcath_dataset_4jixB00.h5",
+   "size": 582529428
+  },
+  {
+   "path": "data/mdcath_dataset_2ltbA00.h5",
+   "size": 675382248
+  },
+  {
+   "path": "data/mdcath_dataset_3or1B01.h5",
+   "size": 659521772
+  },
+  {
+   "path": "data/mdcath_dataset_3lmoA00.h5",
+   "size": 475618524
+  },
+  {
+   "path": "data/mdcath_dataset_1bvoA00.h5",
+   "size": 818929328
+  },
+  {
+   "path": "data/mdcath_dataset_4fcyB04.h5",
+   "size": 359033676
+  },
+  {
+   "path": "data/mdcath_dataset_2e8oA01.h5",
+   "size": 336292444
+  },
+  {
+   "path": "data/mdcath_dataset_1xrsB01.h5",
+   "size": 247277748
+  },
+  {
+   "path": "data/mdcath_dataset_3hzrA01.h5",
+   "size": 1255219464
+  },
+  {
+   "path": "data/mdcath_dataset_3h6zA03.h5",
+   "size": 532215716
+  },
+  {
+   "path": "data/mdcath_dataset_1rh7A02.h5",
+   "size": 264677636
+  },
+  {
+   "path": "data/mdcath_dataset_1yzyA01.h5",
+   "size": 1041530676
+  },
+  {
+   "path": "data/mdcath_dataset_2vn8A02.h5",
+   "size": 939571216
+  },
+  {
+   "path": "data/mdcath_dataset_2hy7A02.h5",
+   "size": 793221580
+  },
+  {
+   "path": "data/mdcath_dataset_2oy8A02.h5",
+   "size": 742440960
+  },
+  {
+   "path": "data/mdcath_dataset_2vywA00.h5",
+   "size": 766698108
+  },
+  {
+   "path": "data/mdcath_dataset_4ruvA00.h5",
+   "size": 495146292
+  },
+  {
+   "path": "data/mdcath_dataset_1k4iA00.h5",
+   "size": 971993516
+  },
+  {
+   "path": "data/mdcath_dataset_2fhzB00.h5",
+   "size": 483023204
+  },
+  {
+   "path": "data/mdcath_dataset_2f1zB01.h5",
+   "size": 775875044
+  },
+  {
+   "path": "data/mdcath_dataset_2e84A02.h5",
+   "size": 569426252
+  },
+  {
+   "path": "data/mdcath_dataset_2x0qA01.h5",
+   "size": 717658752
+  },
+  {
+   "path": "data/mdcath_dataset_1shxA00.h5",
+   "size": 634555612
+  },
+  {
+   "path": "data/mdcath_dataset_3g8qB03.h5",
+   "size": 418299084
+  },
+  {
+   "path": "data/mdcath_dataset_1lmzA00.h5",
+   "size": 869569848
+  },
+  {
+   "path": "data/mdcath_dataset_1byfA00.h5",
+   "size": 553520136
+  },
+  {
+   "path": "data/mdcath_dataset_3tlkB02.h5",
+   "size": 891542496
+  },
+  {
+   "path": "data/mdcath_dataset_2c1dA02.h5",
+   "size": 402556060
+  },
+  {
+   "path": "data/mdcath_dataset_3zuiA00.h5",
+   "size": 723971192
+  },
+  {
+   "path": "data/mdcath_dataset_1wz2A05.h5",
+   "size": 266881132
+  },
+  {
+   "path": "data/mdcath_dataset_2itaA01.h5",
+   "size": 308453156
+  },
+  {
+   "path": "data/mdcath_dataset_2z8zA02.h5",
+   "size": 786464404
+  },
+  {
+   "path": "data/mdcath_dataset_2hh7A00.h5",
+   "size": 437776256
+  },
+  {
+   "path": "data/mdcath_dataset_1d09A02.h5",
+   "size": 748536884
+  },
+  {
+   "path": "data/mdcath_dataset_1kvbA00.h5",
+   "size": 732789512
+  },
+  {
+   "path": "data/mdcath_dataset_3g7lA00.h5",
+   "size": 302816280
+  },
+  {
+   "path": "data/mdcath_dataset_4xrtA02.h5",
+   "size": 722570036
+  },
+  {
+   "path": "data/mdcath_dataset_3ahcA02.h5",
+   "size": 1101480692
+  },
+  {
+   "path": "data/mdcath_dataset_1dx9A00.h5",
+   "size": 760011300
+  },
+  {
+   "path": "data/mdcath_dataset_4juyB00.h5",
+   "size": 917062316
+  },
+  {
+   "path": "data/mdcath_dataset_1eb6A00.h5",
+   "size": 766290352
+  },
+  {
+   "path": "data/mdcath_dataset_3v6zE00.h5",
+   "size": 758923268
+  },
+  {
+   "path": "data/mdcath_dataset_1iduA02.h5",
+   "size": 1758043820
+  },
+  {
+   "path": "data/mdcath_dataset_3dnjA00.h5",
+   "size": 412375660
+  },
+  {
+   "path": "data/mdcath_dataset_1i1iP02.h5",
+   "size": 696256216
+  },
+  {
+   "path": "data/mdcath_dataset_2xzmV01.h5",
+   "size": 349801272
+  },
+  {
+   "path": "data/mdcath_dataset_2jv8A00.h5",
+   "size": 385876552
+  },
+  {
+   "path": "data/mdcath_dataset_2b5dX02.h5",
+   "size": 579498816
+  },
+  {
+   "path": "data/mdcath_dataset_1twuA00.h5",
+   "size": 635443416
+  },
+  {
+   "path": "data/mdcath_dataset_2vkjA00.h5",
+   "size": 571853604
+  },
+  {
+   "path": "data/mdcath_dataset_1ka1A02.h5",
+   "size": 623117408
+  },
+  {
+   "path": "data/mdcath_dataset_3g7dA03.h5",
+   "size": 615807812
+  },
+  {
+   "path": "data/mdcath_dataset_2oktA02.h5",
+   "size": 1097547056
+  },
+  {
+   "path": "data/mdcath_dataset_4cvuA03.h5",
+   "size": 1865022260
+  },
+  {
+   "path": "data/mdcath_dataset_1zo0A00.h5",
+   "size": 589458959
+  },
+  {
+   "path": "data/mdcath_dataset_2xdqB01.h5",
+   "size": 759550216
+  },
+  {
+   "path": "data/mdcath_dataset_2bl0A00.h5",
+   "size": 307880672
+  },
+  {
+   "path": "data/mdcath_dataset_1pmsA00.h5",
+   "size": 643344472
+  },
+  {
+   "path": "data/mdcath_dataset_2jysA00.h5",
+   "size": 453231456
+  },
+  {
+   "path": "data/mdcath_dataset_4igbB02.h5",
+   "size": 664651160
+  },
+  {
+   "path": "data/mdcath_dataset_2coaA01.h5",
+   "size": 608861020
+  },
+  {
+   "path": "data/mdcath_dataset_3j7aN00.h5",
+   "size": 534435472
+  },
+  {
+   "path": "data/mdcath_dataset_3af5A02.h5",
+   "size": 373706880
+  },
+  {
+   "path": "data/mdcath_dataset_1q7lA00.h5",
+   "size": 907900912
+  },
+  {
+   "path": "data/mdcath_dataset_5j98B00.h5",
+   "size": 1308327612
+  },
+  {
+   "path": "data/mdcath_dataset_2arzA02.h5",
+   "size": 386120800
+  },
+  {
+   "path": "data/mdcath_dataset_1fguB01.h5",
+   "size": 501076444
+  },
+  {
+   "path": "data/mdcath_dataset_2xfvA00.h5",
+   "size": 581702852
+  },
+  {
+   "path": "data/mdcath_dataset_1nhwC00.h5",
+   "size": 289918372
+  },
+  {
+   "path": "data/mdcath_dataset_2o4aA00.h5",
+   "size": 467738948
+  },
+  {
+   "path": "data/mdcath_dataset_3jqwC00.h5",
+   "size": 602884848
+  },
+  {
+   "path": "data/mdcath_dataset_2d9vA01.h5",
+   "size": 583991340
+  },
+  {
+   "path": "data/mdcath_dataset_4usaA02.h5",
+   "size": 572914632
+  },
+  {
+   "path": "data/mdcath_dataset_1wifA01.h5",
+   "size": 398036440
+  },
+  {
+   "path": "data/mdcath_dataset_2e8gA01.h5",
+   "size": 697268188
+  },
+  {
+   "path": "data/mdcath_dataset_3mg3A01.h5",
+   "size": 724502848
+  },
+  {
+   "path": "data/mdcath_dataset_1ntvA00.h5",
+   "size": 721869596
+  },
+  {
+   "path": "data/mdcath_dataset_2wg3D02.h5",
+   "size": 286200856
+  },
+  {
+   "path": "data/mdcath_dataset_4p6vF01.h5",
+   "size": 404860924
+  },
+  {
+   "path": "data/mdcath_dataset_1gk9B03.h5",
+   "size": 743426456
+  },
+  {
+   "path": "data/mdcath_dataset_2y6xA00.h5",
+   "size": 566525520
+  },
+  {
+   "path": "data/mdcath_dataset_1kxlA00.h5",
+   "size": 918115080
+  },
+  {
+   "path": "data/mdcath_dataset_2wb8A01.h5",
+   "size": 814471112
+  },
+  {
+   "path": "data/mdcath_dataset_5d4z401.h5",
+   "size": 283709300
+  },
+  {
+   "path": "data/mdcath_dataset_1rzuA02.h5",
+   "size": 951176668
+  },
+  {
+   "path": "data/mdcath_dataset_1vmoA00.h5",
+   "size": 737750180
+  },
+  {
+   "path": "data/mdcath_dataset_1gkgA02.h5",
+   "size": 302315996
+  },
+  {
+   "path": "data/mdcath_dataset_1jr3C02.h5",
+   "size": 577561572
+  },
+  {
+   "path": "data/mdcath_dataset_2klqA00.h5",
+   "size": 608390084
+  },
+  {
+   "path": "data/mdcath_dataset_1c9bA02.h5",
+   "size": 491079416
+  },
+  {
+   "path": "data/mdcath_dataset_1mzvA00.h5",
+   "size": 1007742148
+  },
+  {
+   "path": "data/mdcath_dataset_1rqpA01.h5",
+   "size": 838878904
+  },
+  {
+   "path": "data/mdcath_dataset_4ckmB00.h5",
+   "size": 761204540
+  },
+  {
+   "path": "data/mdcath_dataset_2cssA00.h5",
+   "size": 612337296
+  },
+  {
+   "path": "data/mdcath_dataset_1s03G02.h5",
+   "size": 272377068
+  },
+  {
+   "path": "data/mdcath_dataset_2w3jA00.h5",
+   "size": 651183400
+  },
+  {
+   "path": "data/mdcath_dataset_3eyeA00.h5",
+   "size": 792689960
+  },
+  {
+   "path": "data/mdcath_dataset_1vfiA00.h5",
+   "size": 423551176
+  },
+  {
+   "path": "data/mdcath_dataset_5hh1A00.h5",
+   "size": 1015420248
+  },
+  {
+   "path": "data/mdcath_dataset_3bdlA01.h5",
+   "size": 867363668
+  },
+  {
+   "path": "data/mdcath_dataset_4le7A02.h5",
+   "size": 364542604
+  },
+  {
+   "path": "data/mdcath_dataset_1vw4L02.h5",
+   "size": 415814876
+  },
+  {
+   "path": "data/mdcath_dataset_1xk4D00.h5",
+   "size": 460590976
+  },
+  {
+   "path": "data/mdcath_dataset_2a45H00.h5",
+   "size": 238177844
+  },
+  {
+   "path": "data/mdcath_dataset_1gvhA01.h5",
+   "size": 682963092
+  },
+  {
+   "path": "data/mdcath_dataset_1bdyA00.h5",
+   "size": 579241136
+  },
+  {
+   "path": "data/mdcath_dataset_4ihqA02.h5",
+   "size": 338871012
+  },
+  {
+   "path": "data/mdcath_dataset_2qyuA03.h5",
+   "size": 373268472
+  },
+  {
+   "path": "data/mdcath_dataset_5b7gA00.h5",
+   "size": 1272282448
+  },
+  {
+   "path": "data/mdcath_dataset_2e3tB05.h5",
+   "size": 624014928
+  },
+  {
+   "path": "data/mdcath_dataset_4gi3C00.h5",
+   "size": 274220712
+  },
+  {
+   "path": "data/mdcath_dataset_1kx3D00.h5",
+   "size": 447471136
+  },
+  {
+   "path": "data/mdcath_dataset_2e7gA01.h5",
+   "size": 526056764
+  },
+  {
+   "path": "data/mdcath_dataset_3j4uH00.h5",
+   "size": 647648340
+  },
+  {
+   "path": "data/mdcath_dataset_2e3tB03.h5",
+   "size": 308157920
+  },
+  {
+   "path": "data/mdcath_dataset_1cfbA02.h5",
+   "size": 498049872
+  },
+  {
+   "path": "data/mdcath_dataset_3ezjA02.h5",
+   "size": 352811556
+  },
+  {
+   "path": "data/mdcath_dataset_1l0qA02.h5",
+   "size": 409187816
+  },
+  {
+   "path": "data/mdcath_dataset_1dk5B01.h5",
+   "size": 400491324
+  },
+  {
+   "path": "data/mdcath_dataset_3w5mA01.h5",
+   "size": 506437368
+  },
+  {
+   "path": "data/mdcath_dataset_3f6kA02.h5",
+   "size": 280611440
+  },
+  {
+   "path": "data/mdcath_dataset_1q5zA00.h5",
+   "size": 687191084
+  },
+  {
+   "path": "data/mdcath_dataset_2lfiA00.h5",
+   "size": 635588588
+  },
+  {
+   "path": "data/mdcath_dataset_1by1A00.h5",
+   "size": 981928904
+  },
+  {
+   "path": "data/mdcath_dataset_1bihA02.h5",
+   "size": 494546908
+  },
+  {
+   "path": "data/mdcath_dataset_2qvaA02.h5",
+   "size": 267345456
+  },
+  {
+   "path": "data/mdcath_dataset_2kz8A01.h5",
+   "size": 620959712
+  },
+  {
+   "path": "data/mdcath_dataset_2jo7A00.h5",
+   "size": 1146474876
+  },
+  {
+   "path": "data/mdcath_dataset_2pp4A00.h5",
+   "size": 580309296
+  },
+  {
+   "path": "data/mdcath_dataset_1s79A00.h5",
+   "size": 517265392
+  },
+  {
+   "path": "data/mdcath_dataset_3lq6A02.h5",
+   "size": 551501404
+  },
+  {
+   "path": "data/mdcath_dataset_2rqpA00.h5",
+   "size": 450268028
+  },
+  {
+   "path": "data/mdcath_dataset_1z1bA01.h5",
+   "size": 284733228
+  },
+  {
+   "path": "data/mdcath_dataset_1am4A00.h5",
+   "size": 955872696
+  },
+  {
+   "path": "data/mdcath_dataset_2ebbA00.h5",
+   "size": 495425628
+  },
+  {
+   "path": "data/mdcath_dataset_1e94E03.h5",
+   "size": 488506868
+  },
+  {
+   "path": "data/mdcath_dataset_1g61A00.h5",
+   "size": 1024215456
+  },
+  {
+   "path": "data/mdcath_dataset_5kszA03.h5",
+   "size": 465736952
+  },
+  {
+   "path": "data/mdcath_dataset_5c2mA00.h5",
+   "size": 1116371536
+  },
+  {
+   "path": "data/mdcath_dataset_4cisA01.h5",
+   "size": 698133484
+  },
+  {
+   "path": "data/mdcath_dataset_4cj0A01.h5",
+   "size": 463776112
+  },
+  {
+   "path": "data/mdcath_dataset_1ucrB00.h5",
+   "size": 357360892
+  },
+  {
+   "path": "data/mdcath_dataset_1zkkB00.h5",
+   "size": 766083644
+  },
+  {
+   "path": "data/mdcath_dataset_3am2A02.h5",
+   "size": 586820968
+  },
+  {
+   "path": "data/mdcath_dataset_3tlqA00.h5",
+   "size": 1267144076
+  },
+  {
+   "path": "data/mdcath_dataset_3ig5A03.h5",
+   "size": 442066740
+  },
+  {
+   "path": "data/mdcath_dataset_1fx3B00.h5",
+   "size": 690804344
+  },
+  {
+   "path": "data/mdcath_dataset_2b8zA00.h5",
+   "size": 621071136
+  },
+  {
+   "path": "data/mdcath_dataset_3fiqA00.h5",
+   "size": 782575196
+  },
+  {
+   "path": "data/mdcath_dataset_1oltA02.h5",
+   "size": 394943184
+  },
+  {
+   "path": "data/mdcath_dataset_4bs9A04.h5",
+   "size": 482211700
+  },
+  {
+   "path": "data/mdcath_dataset_1ry9A00.h5",
+   "size": 630510880
+  },
+  {
+   "path": "data/mdcath_dataset_2n50A00.h5",
+   "size": 395765461
+  },
+  {
+   "path": "data/mdcath_dataset_3ajaB00.h5",
+   "size": 1299040932
+  },
+  {
+   "path": "data/mdcath_dataset_3akoD00.h5",
+   "size": 385547220
+  },
+  {
+   "path": "data/mdcath_dataset_3h90A02.h5",
+   "size": 431066748
+  },
+  {
+   "path": "data/mdcath_dataset_2xsgB02.h5",
+   "size": 2169154848
+  },
+  {
+   "path": "data/mdcath_dataset_3g5cA02.h5",
+   "size": 272574704
+  },
+  {
+   "path": "data/mdcath_dataset_2oz4A01.h5",
+   "size": 471361888
+  },
+  {
+   "path": "data/mdcath_dataset_3bpqD00.h5",
+   "size": 495121660
+  },
+  {
+   "path": "data/mdcath_dataset_2xzhA00.h5",
+   "size": 1822153444
+  },
+  {
+   "path": "data/mdcath_dataset_4gipD02.h5",
+   "size": 416055632
+  },
+  {
+   "path": "data/mdcath_dataset_3gz5A01.h5",
+   "size": 594584912
+  },
+  {
+   "path": "data/mdcath_dataset_4fprB00.h5",
+   "size": 589411028
+  },
+  {
+   "path": "data/mdcath_dataset_4lvnP00.h5",
+   "size": 408083768
+  },
+  {
+   "path": "data/mdcath_dataset_3lcnB00.h5",
+   "size": 473394296
+  },
+  {
+   "path": "data/mdcath_dataset_3pf8A00.h5",
+   "size": 1299925400
+  },
+  {
+   "path": "data/mdcath_dataset_1iv8A05.h5",
+   "size": 330937784
+  },
+  {
+   "path": "data/mdcath_dataset_3tl8F00.h5",
+   "size": 465363340
+  },
+  {
+   "path": "data/mdcath_dataset_1lwuB02.h5",
+   "size": 454115544
+  },
+  {
+   "path": "data/mdcath_dataset_1in4A03.h5",
+   "size": 369414572
+  },
+  {
+   "path": "data/mdcath_dataset_3cuqC01.h5",
+   "size": 505855348
+  },
+  {
+   "path": "data/mdcath_dataset_1dk8A02.h5",
+   "size": 410919488
+  },
+  {
+   "path": "data/mdcath_dataset_1xo0A01.h5",
+   "size": 549651676
+  },
+  {
+   "path": "data/mdcath_dataset_2jtvA00.h5",
+   "size": 347302616
+  },
+  {
+   "path": "data/mdcath_dataset_2z4tA01.h5",
+   "size": 492031108
+  },
+  {
+   "path": "data/mdcath_dataset_4ie5A02.h5",
+   "size": 655024916
+  },
+  {
+   "path": "data/mdcath_dataset_5ahoA02.h5",
+   "size": 551758464
+  },
+  {
+   "path": "data/mdcath_dataset_1s1dA00.h5",
+   "size": 1462834100
+  },
+  {
+   "path": "data/mdcath_dataset_2zw5A01.h5",
+   "size": 854314412
+  },
+  {
+   "path": "data/mdcath_dataset_1ccwB02.h5",
+   "size": 322761772
+  },
+  {
+   "path": "data/mdcath_dataset_2w2gA02.h5",
+   "size": 659443440
+  },
+  {
+   "path": "data/mdcath_dataset_3jb9H00.h5",
+   "size": 411490956
+  },
+  {
+   "path": "data/mdcath_dataset_1uw4B00.h5",
+   "size": 1209271732
+  },
+  {
+   "path": "data/mdcath_dataset_3t6pA03.h5",
+   "size": 622906095
+  },
+  {
+   "path": "data/mdcath_dataset_2h6oA03.h5",
+   "size": 516856772
+  },
+  {
+   "path": "data/mdcath_dataset_1twfA04.h5",
+   "size": 311645484
+  },
+  {
+   "path": "data/mdcath_dataset_2wqpA02.h5",
+   "size": 372189816
+  },
+  {
+   "path": "data/mdcath_dataset_4o7oA02.h5",
+   "size": 1074797072
+  },
+  {
+   "path": "data/mdcath_dataset_1k12A00.h5",
+   "size": 691164496
+  },
+  {
+   "path": "data/mdcath_dataset_1dmuA00.h5",
+   "size": 1395694952
+  },
+  {
+   "path": "data/mdcath_dataset_2mcmA00.h5",
+   "size": 508138540
+  },
+  {
+   "path": "data/mdcath_dataset_4neiA01.h5",
+   "size": 1516569592
+  },
+  {
+   "path": "data/mdcath_dataset_4js8A01.h5",
+   "size": 462210592
+  },
+  {
+   "path": "data/mdcath_dataset_2z0xA00.h5",
+   "size": 793328224
+  },
+  {
+   "path": "data/mdcath_dataset_2jzvA00.h5",
+   "size": 586391304
+  },
+  {
+   "path": "data/mdcath_dataset_1nsjA00.h5",
+   "size": 973639976
+  },
+  {
+   "path": "data/mdcath_dataset_4dguA02.h5",
+   "size": 486013076
+  },
+  {
+   "path": "data/mdcath_dataset_2nttA02.h5",
+   "size": 367250156
+  },
+  {
+   "path": "data/mdcath_dataset_1nbuA00.h5",
+   "size": 549034428
+  },
+  {
+   "path": "data/mdcath_dataset_4bq6A01.h5",
+   "size": 495201620
+  },
+  {
+   "path": "data/mdcath_dataset_1o7dC02.h5",
+   "size": 424403360
+  },
+  {
+   "path": "data/mdcath_dataset_2dewX03.h5",
+   "size": 1867349124
+  },
+  {
+   "path": "data/mdcath_dataset_1wpbB02.h5",
+   "size": 542318784
+  },
+  {
+   "path": "data/mdcath_dataset_1l5jA04.h5",
+   "size": 565976436
+  },
+  {
+   "path": "data/mdcath_dataset_2mn5A00.h5",
+   "size": 262011668
+  },
+  {
+   "path": "data/mdcath_dataset_3u9sE04.h5",
+   "size": 654388720
+  },
+  {
+   "path": "data/mdcath_dataset_3kifD00.h5",
+   "size": 468259568
+  },
+  {
+   "path": "data/mdcath_dataset_4cm2A02.h5",
+   "size": 974184704
+  },
+  {
+   "path": "data/mdcath_dataset_1ussA00.h5",
+   "size": 422101504
+  },
+  {
+   "path": "data/mdcath_dataset_1e5tA02.h5",
+   "size": 1648967496
+  },
+  {
+   "path": "data/mdcath_dataset_3knqA02.h5",
+   "size": 492223280
+  },
+  {
+   "path": "data/mdcath_dataset_5cehA02.h5",
+   "size": 493742756
+  },
+  {
+   "path": "data/mdcath_dataset_1ds8M02.h5",
+   "size": 733641796
+  },
+  {
+   "path": "data/mdcath_dataset_1atgA02.h5",
+   "size": 490239412
+  },
+  {
+   "path": "data/mdcath_dataset_2v8sV00.h5",
+   "size": 480796768
+  },
+  {
+   "path": "data/mdcath_dataset_1f7uA03.h5",
+   "size": 635427544
+  },
+  {
+   "path": "data/mdcath_dataset_3py9A04.h5",
+   "size": 405739860
+  },
+  {
+   "path": "data/mdcath_dataset_1ru3A04.h5",
+   "size": 413204412
+  },
+  {
+   "path": "data/mdcath_dataset_3aq5A00.h5",
+   "size": 607266736
+  },
+  {
+   "path": "data/mdcath_dataset_3fxdB00.h5",
+   "size": 294170252
+  },
+  {
+   "path": "data/mdcath_dataset_1v8cA01.h5",
+   "size": 394602560
+  },
+  {
+   "path": "data/mdcath_dataset_2bxrA03.h5",
+   "size": 455154084
+  },
+  {
+   "path": "data/mdcath_dataset_2fz0A00.h5",
+   "size": 796113344
+  },
+  {
+   "path": "data/mdcath_dataset_2ec4A00.h5",
+   "size": 881429856
+  },
+  {
+   "path": "data/mdcath_dataset_3nutB02.h5",
+   "size": 612593412
+  },
+  {
+   "path": "data/mdcath_dataset_4hgzA02.h5",
+   "size": 293875244
+  },
+  {
+   "path": "data/mdcath_dataset_1y66A00.h5",
+   "size": 262265672
+  },
+  {
+   "path": "data/mdcath_dataset_2xq0A03.h5",
+   "size": 833581472
+  },
+  {
+   "path": "data/mdcath_dataset_2l66A00.h5",
+   "size": 275658912
+  },
+  {
+   "path": "data/mdcath_dataset_2rcnA03.h5",
+   "size": 328826556
+  },
+  {
+   "path": "data/mdcath_dataset_2kc3A00.h5",
+   "size": 971465032
+  },
+  {
+   "path": "data/mdcath_dataset_1ahsA00.h5",
+   "size": 560473012
+  },
+  {
+   "path": "data/mdcath_dataset_3wz2B00.h5",
+   "size": 1096887228
+  },
+  {
+   "path": "data/mdcath_dataset_3er6A00.h5",
+   "size": 978331876
+  },
+  {
+   "path": "data/mdcath_dataset_2jpiA00.h5",
+   "size": 489069908
+  },
+  {
+   "path": "data/mdcath_dataset_3pqsA01.h5",
+   "size": 447756244
+  },
+  {
+   "path": "data/mdcath_dataset_2wdqC00.h5",
+   "size": 651104384
+  },
+  {
+   "path": "data/mdcath_dataset_1kvnA00.h5",
+   "size": 534721356
+  },
+  {
+   "path": "data/mdcath_dataset_1r7jA00.h5",
+   "size": 435284108
+  },
+  {
+   "path": "data/mdcath_dataset_3gw6F01.h5",
+   "size": 450904712
+  },
+  {
+   "path": "data/mdcath_dataset_2bh1X00.h5",
+   "size": 340028976
+  },
+  {
+   "path": "data/mdcath_dataset_2ivxB01.h5",
+   "size": 744584420
+  },
+  {
+   "path": "data/mdcath_dataset_2a02A01.h5",
+   "size": 345446304
+  },
+  {
+   "path": "data/mdcath_dataset_3bjdA01.h5",
+   "size": 451018028
+  },
+  {
+   "path": "data/mdcath_dataset_3hkzG00.h5",
+   "size": 582906760
+  },
+  {
+   "path": "data/mdcath_dataset_1m0sA02.h5",
+   "size": 328998940
+  },
+  {
+   "path": "data/mdcath_dataset_1ecmA00.h5",
+   "size": 455708048
+  },
+  {
+   "path": "data/mdcath_dataset_2ltsA00.h5",
+   "size": 463123876
+  },
+  {
+   "path": "data/mdcath_dataset_3zxaC02.h5",
+   "size": 513982420
+  },
+  {
+   "path": "data/mdcath_dataset_5h1sY00.h5",
+   "size": 413717860
+  },
+  {
+   "path": "data/mdcath_dataset_3k7dA02.h5",
+   "size": 1208221404
+  },
+  {
+   "path": "data/mdcath_dataset_3c12A02.h5",
+   "size": 396246128
+  },
+  {
+   "path": "data/mdcath_dataset_1i9dA00.h5",
+   "size": 652947280
+  },
+  {
+   "path": "data/mdcath_dataset_4a53A01.h5",
+   "size": 303500100
+  },
+  {
+   "path": "data/mdcath_dataset_3vsmA03.h5",
+   "size": 473097856
+  },
+  {
+   "path": "data/mdcath_dataset_3mtvA01.h5",
+   "size": 417032900
+  },
+  {
+   "path": "data/mdcath_dataset_1ogpA02.h5",
+   "size": 577889464
+  },
+  {
+   "path": "data/mdcath_dataset_3gtzA00.h5",
+   "size": 563013460
+  },
+  {
+   "path": "data/mdcath_dataset_1d7pM00.h5",
+   "size": 749544704
+  },
+  {
+   "path": "data/mdcath_dataset_4lj7A01.h5",
+   "size": 1145429492
+  },
+  {
+   "path": "data/mdcath_dataset_5ez3A03.h5",
+   "size": 670886032
+  },
+  {
+   "path": "data/mdcath_dataset_3kzjA02.h5",
+   "size": 344303472
+  },
+  {
+   "path": "data/mdcath_dataset_3w5nA03.h5",
+   "size": 817390256
+  },
+  {
+   "path": "data/mdcath_dataset_1f3mA00.h5",
+   "size": 331940012
+  },
+  {
+   "path": "data/mdcath_dataset_2jvlA01.h5",
+   "size": 421329492
+  },
+  {
+   "path": "data/mdcath_dataset_4bgdA07.h5",
+   "size": 1191382552
+  },
+  {
+   "path": "data/mdcath_dataset_2mz0A00.h5",
+   "size": 256013288
+  },
+  {
+   "path": "data/mdcath_dataset_1oq4A00.h5",
+   "size": 1625791932
+  },
+  {
+   "path": "data/mdcath_dataset_2bteA05.h5",
+   "size": 298257012
+  },
+  {
+   "path": "data/mdcath_dataset_4fl0A02.h5",
+   "size": 1274328340
+  },
+  {
+   "path": "data/mdcath_dataset_3wa1A01.h5",
+   "size": 833902452
+  },
+  {
+   "path": "data/mdcath_dataset_2l1sA00.h5",
+   "size": 414092288
+  },
+  {
+   "path": "data/mdcath_dataset_2f40A00.h5",
+   "size": 405397628
+  },
+  {
+   "path": "data/mdcath_dataset_4g1eA02.h5",
+   "size": 851016392
+  },
+  {
+   "path": "data/mdcath_dataset_2hl7A00.h5",
+   "size": 406573340
+  },
+  {
+   "path": "data/mdcath_dataset_1i7xB00.h5",
+   "size": 261342876
+  },
+  {
+   "path": "data/mdcath_dataset_4o4xA02.h5",
+   "size": 795260876
+  },
+  {
+   "path": "data/mdcath_dataset_4tmpA00.h5",
+   "size": 734220180
+  },
+  {
+   "path": "data/mdcath_dataset_1aq3A00.h5",
+   "size": 576036444
+  },
+  {
+   "path": "data/mdcath_dataset_2l1aA00.h5",
+   "size": 535401692
+  },
+  {
+   "path": "data/mdcath_dataset_3fcsA03.h5",
+   "size": 715024268
+  },
+  {
+   "path": "data/mdcath_dataset_3l2pA03.h5",
+   "size": 630912836
+  },
+  {
+   "path": "data/mdcath_dataset_2mkjA02.h5",
+   "size": 487618196
+  },
+  {
+   "path": "data/mdcath_dataset_3hiaA00.h5",
+   "size": 345814660
+  },
+  {
+   "path": "data/mdcath_dataset_1y1aA01.h5",
+   "size": 465871440
+  },
+  {
+   "path": "data/mdcath_dataset_2lfeA00.h5",
+   "size": 549202756
+  },
+  {
+   "path": "data/mdcath_dataset_4d8mA03.h5",
+   "size": 919109176
+  },
+  {
+   "path": "data/mdcath_dataset_4kcaA02.h5",
+   "size": 1745090768
+  },
+  {
+   "path": "data/mdcath_dataset_1yt3A02.h5",
+   "size": 475878408
+  },
+  {
+   "path": "data/mdcath_dataset_2zj8A03.h5",
+   "size": 1270389832
+  },
+  {
+   "path": "data/mdcath_dataset_3tjlA00.h5",
+   "size": 2034622508
+  },
+  {
+   "path": "data/mdcath_dataset_1cxzB00.h5",
+   "size": 420896484
+  },
+  {
+   "path": "data/mdcath_dataset_4a35A02.h5",
+   "size": 1550768000
+  },
+  {
+   "path": "data/mdcath_dataset_1l0oC00.h5",
+   "size": 267007876
+  },
+  {
+   "path": "data/mdcath_dataset_1ceuA00.h5",
+   "size": 252550212
+  },
+  {
+   "path": "data/mdcath_dataset_2xzmK00.h5",
+   "size": 727287876
+  },
+  {
+   "path": "data/mdcath_dataset_3q4uB01.h5",
+   "size": 472220600
+  },
+  {
+   "path": "data/mdcath_dataset_1nf3C00.h5",
+   "size": 577986760
+  },
+  {
+   "path": "data/mdcath_dataset_4divS02.h5",
+   "size": 514872604
+  },
+  {
+   "path": "data/mdcath_dataset_1k32A04.h5",
+   "size": 427856272
+  },
+  {
+   "path": "data/mdcath_dataset_1vp2A00.h5",
+   "size": 893668592
+  },
+  {
+   "path": "data/mdcath_dataset_4i92A01.h5",
+   "size": 462664556
+  },
+  {
+   "path": "data/mdcath_dataset_2b9eA01.h5",
+   "size": 379528735
+  },
+  {
+   "path": "data/mdcath_dataset_4zevA02.h5",
+   "size": 559722072
+  },
+  {
+   "path": "data/mdcath_dataset_1zp2A02.h5",
+   "size": 553575776
+  },
+  {
+   "path": "data/mdcath_dataset_2d4uB00.h5",
+   "size": 771250096
+  },
+  {
+   "path": "data/mdcath_dataset_1rifA01.h5",
+   "size": 449779148
+  },
+  {
+   "path": "data/mdcath_dataset_1xjaE00.h5",
+   "size": 784851712
+  },
+  {
+   "path": "data/mdcath_dataset_1vf5B02.h5",
+   "size": 441925184
+  },
+  {
+   "path": "data/mdcath_dataset_5a9tA02.h5",
+   "size": 606509472
+  },
+  {
+   "path": "data/mdcath_dataset_4d1eA04.h5",
+   "size": 313447120
+  },
+  {
+   "path": "data/mdcath_dataset_5eokA03.h5",
+   "size": 399841200
+  },
+  {
+   "path": "data/mdcath_dataset_3zj0A00.h5",
+   "size": 985389892
+  },
+  {
+   "path": "data/mdcath_dataset_2b5eA03.h5",
+   "size": 599574652
+  },
+  {
+   "path": "data/mdcath_dataset_1q6aA00.h5",
+   "size": 528854184
+  },
+  {
+   "path": "data/mdcath_dataset_3lcrB00.h5",
+   "size": 1321317199
+  },
+  {
+   "path": "data/mdcath_dataset_3clwA02.h5",
+   "size": 2011987792
+  },
+  {
+   "path": "data/mdcath_dataset_4bgdA08.h5",
+   "size": 973464384
+  },
+  {
+   "path": "data/mdcath_dataset_1e53A00.h5",
+   "size": 268252116
+  },
+  {
+   "path": "data/mdcath_dataset_3g7mA00.h5",
+   "size": 704765440
+  },
+  {
+   "path": "data/mdcath_dataset_2v5wA00.h5",
+   "size": 1709180776
+  },
+  {
+   "path": "data/mdcath_dataset_5jp1A00.h5",
+   "size": 941117280
+  },
+  {
+   "path": "data/mdcath_dataset_3vsvA02.h5",
+   "size": 701914108
+  },
+  {
+   "path": "data/mdcath_dataset_2m67A00.h5",
+   "size": 439783488
+  },
+  {
+   "path": "data/mdcath_dataset_1hw7A02.h5",
+   "size": 240617988
+  },
+  {
+   "path": "data/mdcath_dataset_4ev6A03.h5",
+   "size": 297742124
+  },
+  {
+   "path": "data/mdcath_dataset_5bxrA02.h5",
+   "size": 1787755560
+  },
+  {
+   "path": "data/mdcath_dataset_1khiA01.h5",
+   "size": 343716388
+  },
+  {
+   "path": "data/mdcath_dataset_1imoA00.h5",
+   "size": 415520204
+  },
+  {
+   "path": "data/mdcath_dataset_1otkA00.h5",
+   "size": 1134022732
+  },
+  {
+   "path": "data/mdcath_dataset_1fmtB01.h5",
+   "size": 913270040
+  },
+  {
+   "path": "data/mdcath_dataset_1u6zA04.h5",
+   "size": 262767252
+  },
+  {
+   "path": "data/mdcath_dataset_3nnkA02.h5",
+   "size": 610041540
+  },
+  {
+   "path": "data/mdcath_dataset_4c1bB01.h5",
+   "size": 297792824
+  },
+  {
+   "path": "data/mdcath_dataset_1jjfA00.h5",
+   "size": 1159047624
+  },
+  {
+   "path": "data/mdcath_dataset_4d3sA01.h5",
+   "size": 771137804
+  },
+  {
+   "path": "data/mdcath_dataset_1xbsA00.h5",
+   "size": 650181016
+  },
+  {
+   "path": "data/mdcath_dataset_1qq3A00.h5",
+   "size": 492428108
+  },
+  {
+   "path": "data/mdcath_dataset_2yugA00.h5",
+   "size": 775047064
+  },
+  {
+   "path": "data/mdcath_dataset_1oj1A00.h5",
+   "size": 505872516
+  },
+  {
+   "path": "data/mdcath_dataset_2c7hA00.h5",
+   "size": 391214868
+  },
+  {
+   "path": "data/mdcath_dataset_1jssA00.h5",
+   "size": 936015596
+  },
+  {
+   "path": "data/mdcath_dataset_4hdjA00.h5",
+   "size": 1722082776
+  },
+  {
+   "path": "data/mdcath_dataset_2c0hA00.h5",
+   "size": 1594838168
+  },
+  {
+   "path": "data/mdcath_dataset_1mabB01.h5",
+   "size": 326059588
+  },
+  {
+   "path": "data/mdcath_dataset_4a4kA02.h5",
+   "size": 642024496
+  },
+  {
+   "path": "data/mdcath_dataset_3fjuB00.h5",
+   "size": 322431096
+  },
+  {
+   "path": "data/mdcath_dataset_1g86A00.h5",
+   "size": 679302416
+  },
+  {
+   "path": "data/mdcath_dataset_3qdkA02.h5",
+   "size": 1136953280
+  },
+  {
+   "path": "data/mdcath_dataset_4c00A04.h5",
+   "size": 1547116700
+  },
+  {
+   "path": "data/mdcath_dataset_4deqA02.h5",
+   "size": 282733136
+  },
+  {
+   "path": "data/mdcath_dataset_1fpzC00.h5",
+   "size": 828891852
+  },
+  {
+   "path": "data/mdcath_dataset_1zzaA00.h5",
+   "size": 414184736
+  },
+  {
+   "path": "data/mdcath_dataset_3cp8A04.h5",
+   "size": 271737736
+  },
+  {
+   "path": "data/mdcath_dataset_1tocR02.h5",
+   "size": 239172972
+  },
+  {
+   "path": "data/mdcath_dataset_3fcsB03.h5",
+   "size": 1235887340
+  },
+  {
+   "path": "data/mdcath_dataset_4ylqT01.h5",
+   "size": 467555920
+  },
+  {
+   "path": "data/mdcath_dataset_2ztnA01.h5",
+   "size": 907779340
+  },
+  {
+   "path": "data/mdcath_dataset_4tquM01.h5",
+   "size": 1289667880
+  },
+  {
+   "path": "data/mdcath_dataset_3a57A00.h5",
+   "size": 801906308
+  },
+  {
+   "path": "data/mdcath_dataset_1tx9A00.h5",
+   "size": 656053960
+  },
+  {
+   "path": "data/mdcath_dataset_1bcpD00.h5",
+   "size": 502900728
+  },
+  {
+   "path": "data/mdcath_dataset_1ex9A00.h5",
+   "size": 1244303000
+  },
+  {
+   "path": "data/mdcath_dataset_1v6zA01.h5",
+   "size": 323041052
+  },
+  {
+   "path": "data/mdcath_dataset_5bqtC02.h5",
+   "size": 675513060
+  },
+  {
+   "path": "data/mdcath_dataset_4r7pA02.h5",
+   "size": 598440544
+  },
+  {
+   "path": "data/mdcath_dataset_3gyrA02.h5",
+   "size": 1052597020
+  },
+  {
+   "path": "data/mdcath_dataset_2oi2A02.h5",
+   "size": 652293980
+  },
+  {
+   "path": "data/mdcath_dataset_2knrA00.h5",
+   "size": 606185116
+  },
+  {
+   "path": "data/mdcath_dataset_4xvhA01.h5",
+   "size": 450077380
+  },
+  {
+   "path": "data/mdcath_dataset_3juuA00.h5",
+   "size": 1371830404
+  },
+  {
+   "path": "data/mdcath_dataset_1icfI00.h5",
+   "size": 293517780
+  },
+  {
+   "path": "data/mdcath_dataset_2qy0A01.h5",
+   "size": 352440264
+  },
+  {
+   "path": "data/mdcath_dataset_1hufA00.h5",
+   "size": 566522060
+  },
+  {
+   "path": "data/mdcath_dataset_3er0A02.h5",
+   "size": 360047696
+  },
+  {
+   "path": "data/mdcath_dataset_1svuA02.h5",
+   "size": 462799508
+  },
+  {
+   "path": "data/mdcath_dataset_4n3gA02.h5",
+   "size": 481685088
+  },
+  {
+   "path": "data/mdcath_dataset_4i3gA03.h5",
+   "size": 506948560
+  },
+  {
+   "path": "data/mdcath_dataset_5by7A02.h5",
+   "size": 641550052
+  },
+  {
+   "path": "data/mdcath_dataset_2citA00.h5",
+   "size": 1266505560
+  },
+  {
+   "path": "data/mdcath_dataset_1vw4V00.h5",
+   "size": 326403844
+  },
+  {
+   "path": "data/mdcath_dataset_3eb7A03.h5",
+   "size": 1019150160
+  },
+  {
+   "path": "data/mdcath_dataset_2wpvE00.h5",
+   "size": 1440180212
+  },
+  {
+   "path": "data/mdcath_dataset_3b59A01.h5",
+   "size": 590603048
+  },
+  {
+   "path": "data/mdcath_dataset_4gioA00.h5",
+   "size": 484622292
+  },
+  {
+   "path": "data/mdcath_dataset_2mxdA00.h5",
+   "size": 333534036
+  },
+  {
+   "path": "data/mdcath_dataset_3vsfC01.h5",
+   "size": 1662235780
+  },
+  {
+   "path": "data/mdcath_dataset_2i1jA01.h5",
+   "size": 430536104
+  },
+  {
+   "path": "data/mdcath_dataset_3jb9Z00.h5",
+   "size": 406533788
+  },
+  {
+   "path": "data/mdcath_dataset_1w1hD00.h5",
+   "size": 684016248
+  },
+  {
+   "path": "data/mdcath_dataset_1ks5A00.h5",
+   "size": 980554552
+  },
+  {
+   "path": "data/mdcath_dataset_1gzeA00.h5",
+   "size": 963750040
+  },
+  {
+   "path": "data/mdcath_dataset_2yguC00.h5",
+   "size": 584914948
+  },
+  {
+   "path": "data/mdcath_dataset_1shuX00.h5",
+   "size": 838518084
+  },
+  {
+   "path": "data/mdcath_dataset_2h6oA02.h5",
+   "size": 773488032
+  },
+  {
+   "path": "data/mdcath_dataset_1li1B00.h5",
+   "size": 1015572424
+  },
+  {
+   "path": "data/mdcath_dataset_1pf5A00.h5",
+   "size": 593643144
+  },
+  {
+   "path": "data/mdcath_dataset_3d37A02.h5",
+   "size": 418106400
+  },
+  {
+   "path": "data/mdcath_dataset_4c20A02.h5",
+   "size": 726426760
+  },
+  {
+   "path": "data/mdcath_dataset_4fixA01.h5",
+   "size": 2001202676
+  },
+  {
+   "path": "data/mdcath_dataset_2wzpR03.h5",
+   "size": 404599860
+  },
+  {
+   "path": "data/mdcath_dataset_4dohB02.h5",
+   "size": 422309140
+  },
+  {
+   "path": "data/mdcath_dataset_4rajA00.h5",
+   "size": 930020428
+  },
+  {
+   "path": "data/mdcath_dataset_3js8A03.h5",
+   "size": 1435632436
+  },
+  {
+   "path": "data/mdcath_dataset_2k5tA00.h5",
+   "size": 683659428
+  },
+  {
+   "path": "data/mdcath_dataset_2qbuA02.h5",
+   "size": 477934636
+  },
+  {
+   "path": "data/mdcath_dataset_2gz4A00.h5",
+   "size": 1017427039
+  },
+  {
+   "path": "data/mdcath_dataset_2f5tX02.h5",
+   "size": 484406924
+  },
+  {
+   "path": "data/mdcath_dataset_1ihvA00.h5",
+   "size": 264862284
+  },
+  {
+   "path": "data/mdcath_dataset_1iq8A02.h5",
+   "size": 349375396
+  },
+  {
+   "path": "data/mdcath_dataset_4drsA03.h5",
+   "size": 437790552
+  },
+  {
+   "path": "data/mdcath_dataset_3vu1A04.h5",
+   "size": 696482204
+  },
+  {
+   "path": "data/mdcath_dataset_1oqlB02.h5",
+   "size": 571169320
+  },
+  {
+   "path": "data/mdcath_dataset_2e9qA02.h5",
+   "size": 842582152
+  },
+  {
+   "path": "data/mdcath_dataset_1balA00.h5",
+   "size": 235649588
+  },
+  {
+   "path": "data/mdcath_dataset_3ol4A02.h5",
+   "size": 297991748
+  },
+  {
+   "path": "data/mdcath_dataset_1ow4A00.h5",
+   "size": 541983044
+  },
+  {
+   "path": "data/mdcath_dataset_4atgA00.h5",
+   "size": 1075918712
+  },
+  {
+   "path": "data/mdcath_dataset_1v1gA00.h5",
+   "size": 915875652
+  },
+  {
+   "path": "data/mdcath_dataset_2l9wA00.h5",
+   "size": 596605924
+  },
+  {
+   "path": "data/mdcath_dataset_1kmdA00.h5",
+   "size": 602605496
+  },
+  {
+   "path": "data/mdcath_dataset_1sb0A00.h5",
+   "size": 436949436
+  },
+  {
+   "path": "data/mdcath_dataset_2nclA00.h5",
+   "size": 418574008
+  },
+  {
+   "path": "data/mdcath_dataset_2xepA03.h5",
+   "size": 255500664
+  },
+  {
+   "path": "data/mdcath_dataset_1tdqA01.h5",
+   "size": 436636544
+  },
+  {
+   "path": "data/mdcath_dataset_2qv6A01.h5",
+   "size": 669342356
+  },
+  {
+   "path": "data/mdcath_dataset_3tvqA00.h5",
+   "size": 739997132
+  },
+  {
+   "path": "data/mdcath_dataset_4hwiB02.h5",
+   "size": 550523676
+  },
+  {
+   "path": "data/mdcath_dataset_1pprM02.h5",
+   "size": 682735156
+  },
+  {
+   "path": "data/mdcath_dataset_2jxwA00.h5",
+   "size": 373523688
+  },
+  {
+   "path": "data/mdcath_dataset_1u0vB01.h5",
+   "size": 1034017372
+  },
+  {
+   "path": "data/mdcath_dataset_3t0fA03.h5",
+   "size": 508685724
+  },
+  {
+   "path": "data/mdcath_dataset_4i98B01.h5",
+   "size": 350858336
+  },
+  {
+   "path": "data/mdcath_dataset_2aujD03.h5",
+   "size": 291894772
+  },
+  {
+   "path": "data/mdcath_dataset_2vh1A01.h5",
+   "size": 389826184
+  },
+  {
+   "path": "data/mdcath_dataset_3gwyB00.h5",
+   "size": 719823496
+  },
+  {
+   "path": "data/mdcath_dataset_2mdiA00.h5",
+   "size": 288901572
+  },
+  {
+   "path": "data/mdcath_dataset_2nogA01.h5",
+   "size": 395891436
+  },
+  {
+   "path": "data/mdcath_dataset_1c8jA00.h5",
+   "size": 1865449280
+  },
+  {
+   "path": "data/mdcath_dataset_4ejyA01.h5",
+   "size": 589261828
+  },
+  {
+   "path": "data/mdcath_dataset_5f33A03.h5",
+   "size": 431201108
+  },
+  {
+   "path": "data/mdcath_dataset_2k86A00.h5",
+   "size": 519532576
+  },
+  {
+   "path": "data/mdcath_dataset_3vhlA02.h5",
+   "size": 603830316
+  },
+  {
+   "path": "data/mdcath_dataset_2fphX02.h5",
+   "size": 490889188
+  },
+  {
+   "path": "data/mdcath_dataset_5flxZ00.h5",
+   "size": 374806864
+  },
+  {
+   "path": "data/mdcath_dataset_2cfoA05.h5",
+   "size": 468928788
+  },
+  {
+   "path": "data/mdcath_dataset_1su0B00.h5",
+   "size": 617265112
+  },
+  {
+   "path": "data/mdcath_dataset_3ikoC02.h5",
+   "size": 775711352
+  },
+  {
+   "path": "data/mdcath_dataset_1ezjA01.h5",
+   "size": 285544796
+  },
+  {
+   "path": "data/mdcath_dataset_3j7aO00.h5",
+   "size": 447490224
+  },
+  {
+   "path": "data/mdcath_dataset_1xxaC00.h5",
+   "size": 331314988
+  },
+  {
+   "path": "data/mdcath_dataset_4ofyD04.h5",
+   "size": 428563972
+  },
+  {
+   "path": "data/mdcath_dataset_3al9A02.h5",
+   "size": 268530836
+  },
+  {
+   "path": "data/mdcath_dataset_1k8kD01.h5",
+   "size": 724165696
+  },
+  {
+   "path": "data/mdcath_dataset_2lz0A00.h5",
+   "size": 512287012
+  },
+  {
+   "path": "data/mdcath_dataset_1ccdA00.h5",
+   "size": 360959276
+  },
+  {
+   "path": "data/mdcath_dataset_1y9xA01.h5",
+   "size": 430032948
+  },
+  {
+   "path": "data/mdcath_dataset_4oj5A03.h5",
+   "size": 1969951488
+  },
+  {
+   "path": "data/mdcath_dataset_1e8rA00.h5",
+   "size": 219562980
+  },
+  {
+   "path": "data/mdcath_dataset_3tekA00.h5",
+   "size": 723218712
+  },
+  {
+   "path": "data/mdcath_dataset_4wz3B02.h5",
+   "size": 358087448
+  },
+  {
+   "path": "data/mdcath_dataset_2kvrA00.h5",
+   "size": 696202556
+  },
+  {
+   "path": "data/mdcath_dataset_3o0aA00.h5",
+   "size": 1119095240
+  },
+  {
+   "path": "data/mdcath_dataset_4gn1A01.h5",
+   "size": 428466124
+  },
+  {
+   "path": "data/mdcath_dataset_2uxwA02.h5",
+   "size": 607382832
+  },
+  {
+   "path": "data/mdcath_dataset_4gnxC02.h5",
+   "size": 625562352
+  },
+  {
+   "path": "data/mdcath_dataset_1vynA00.h5",
+   "size": 566848568
+  },
+  {
+   "path": "data/mdcath_dataset_2kjrA01.h5",
+   "size": 409282188
+  },
+  {
+   "path": "data/mdcath_dataset_1im3D00.h5",
+   "size": 454356164
+  },
+  {
+   "path": "data/mdcath_dataset_4qpiC00.h5",
+   "size": 1289582512
+  },
+  {
+   "path": "data/mdcath_dataset_2croA00.h5",
+   "size": 350826848
+  },
+  {
+   "path": "data/mdcath_dataset_2jliA00.h5",
+   "size": 532447548
+  },
+  {
+   "path": "data/mdcath_dataset_2cruA01.h5",
+   "size": 391685144
+  },
+  {
+   "path": "data/mdcath_dataset_1xo8A00.h5",
+   "size": 696133560
+  },
+  {
+   "path": "data/mdcath_dataset_1kiuB01.h5",
+   "size": 707037312
+  },
+  {
+   "path": "data/mdcath_dataset_4azzA00.h5",
+   "size": 792898504
+  },
+  {
+   "path": "data/mdcath_dataset_4ihqB05.h5",
+   "size": 302511592
+  },
+  {
+   "path": "data/mdcath_dataset_2h41A00.h5",
+   "size": 477769624
+  },
+  {
+   "path": "data/mdcath_dataset_1g8kC01.h5",
+   "size": 526402604
+  },
+  {
+   "path": "data/mdcath_dataset_2vrsA03.h5",
+   "size": 644240868
+  },
+  {
+   "path": "data/mdcath_dataset_2f5tX01.h5",
+   "size": 757917488
+  },
+  {
+   "path": "data/mdcath_dataset_1ad3A02.h5",
+   "size": 904742544
+  },
+  {
+   "path": "data/mdcath_dataset_4qxbB00.h5",
+   "size": 342222996
+  },
+  {
+   "path": "data/mdcath_dataset_4r5qA00.h5",
+   "size": 1083728816
+  },
+  {
+   "path": "data/mdcath_dataset_3ju2A00.h5",
+   "size": 1299549248
+  },
+  {
+   "path": "data/mdcath_dataset_4xfsA00.h5",
+   "size": 704248444
+  },
+  {
+   "path": "data/mdcath_dataset_2gzoA02.h5",
+   "size": 436951480
+  },
+  {
+   "path": "data/mdcath_dataset_3rf3B01.h5",
+   "size": 623990971
+  },
+  {
+   "path": "data/mdcath_dataset_2xxpA01.h5",
+   "size": 549787200
+  },
+  {
+   "path": "data/mdcath_dataset_2ckzB01.h5",
+   "size": 427129240
+  },
+  {
+   "path": "data/mdcath_dataset_5b5eE00.h5",
+   "size": 381396976
+  },
+  {
+   "path": "data/mdcath_dataset_4i6jB02.h5",
+   "size": 1760368172
+  },
+  {
+   "path": "data/mdcath_dataset_2wh6A00.h5",
+   "size": 832927080
+  },
+  {
+   "path": "data/mdcath_dataset_2lxeA01.h5",
+   "size": 363130432
+  },
+  {
+   "path": "data/mdcath_dataset_4akrA01.h5",
+   "size": 498069548
+  },
+  {
+   "path": "data/mdcath_dataset_3nvnA00.h5",
+   "size": 1907183640
+  },
+  {
+   "path": "data/mdcath_dataset_4k3bA01.h5",
+   "size": 350714968
+  },
+  {
+   "path": "data/mdcath_dataset_3zcoA00.h5",
+   "size": 572091864
+  },
+  {
+   "path": "data/mdcath_dataset_3e6jA00.h5",
+   "size": 1102703156
+  },
+  {
+   "path": "data/mdcath_dataset_5aj3P00.h5",
+   "size": 618104992
+  },
+  {
+   "path": "data/mdcath_dataset_3k6yA02.h5",
+   "size": 486465904
+  },
+  {
+   "path": "data/mdcath_dataset_4mmhA02.h5",
+   "size": 1265604496
+  },
+  {
+   "path": "data/mdcath_dataset_1wgfA01.h5",
+   "size": 271764376
+  },
+  {
+   "path": "data/mdcath_dataset_3giaA00.h5",
+   "size": 2215608176
+  },
+  {
+   "path": "data/mdcath_dataset_1v7wA01.h5",
+   "size": 1399607916
+  },
+  {
+   "path": "data/mdcath_dataset_1r3fA02.h5",
+   "size": 297861284
+  },
+  {
+   "path": "data/mdcath_dataset_3vw4A01.h5",
+   "size": 495596388
+  },
+  {
+   "path": "data/mdcath_dataset_4a2qA01.h5",
+   "size": 470922904
+  },
+  {
+   "path": "data/mdcath_dataset_2m5sA00.h5",
+   "size": 611322716
+  },
+  {
+   "path": "data/mdcath_dataset_2aswA00.h5",
+   "size": 264530076
+  },
+  {
+   "path": "data/mdcath_dataset_5f8vA02.h5",
+   "size": 485981136
+  },
+  {
+   "path": "data/mdcath_dataset_1y1uA01.h5",
+   "size": 958540176
+  },
+  {
+   "path": "data/mdcath_dataset_1lwjA03.h5",
+   "size": 253603372
+  },
+  {
+   "path": "data/mdcath_dataset_4a0tA03.h5",
+   "size": 422262084
+  },
+  {
+   "path": "data/mdcath_dataset_1zkzA00.h5",
+   "size": 496466856
+  },
+  {
+   "path": "data/mdcath_dataset_2lqjA00.h5",
+   "size": 478240236
+  },
+  {
+   "path": "data/mdcath_dataset_2kj6A01.h5",
+   "size": 435038448
+  },
+  {
+   "path": "data/mdcath_dataset_4tx1A00.h5",
+   "size": 975065400
+  },
+  {
+   "path": "data/mdcath_dataset_1lrvA00.h5",
+   "size": 1116943080
+  },
+  {
+   "path": "data/mdcath_dataset_3q3qA02.h5",
+   "size": 598203180
+  },
+  {
+   "path": "data/mdcath_dataset_4kjzB01.h5",
+   "size": 360931788
+  },
+  {
+   "path": "data/mdcath_dataset_2zvsA00.h5",
+   "size": 394439256
+  },
+  {
+   "path": "data/mdcath_dataset_1ha8A00.h5",
+   "size": 195660164
+  },
+  {
+   "path": "data/mdcath_dataset_2pfmA03.h5",
+   "size": 453636624
+  },
+  {
+   "path": "data/mdcath_dataset_2w0gA00.h5",
+   "size": 707704848
+  },
+  {
+   "path": "data/mdcath_dataset_3djnB00.h5",
+   "size": 616000508
+  },
+  {
+   "path": "data/mdcath_dataset_1b35D00.h5",
+   "size": 257891716
+  },
+  {
+   "path": "data/mdcath_dataset_3gdcA02.h5",
+   "size": 627517844
+  },
+  {
+   "path": "data/mdcath_dataset_1pwuA04.h5",
+   "size": 1054111240
+  },
+  {
+   "path": "data/mdcath_dataset_3ph0C00.h5",
+   "size": 265286832
+  },
+  {
+   "path": "data/mdcath_dataset_2dfjA00.h5",
+   "size": 1355156312
+  },
+  {
+   "path": "data/mdcath_dataset_3dmqA01.h5",
+   "size": 263755212
+  },
+  {
+   "path": "data/mdcath_dataset_2ctzA01.h5",
+   "size": 1336318976
+  },
+  {
+   "path": "data/mdcath_dataset_1ea0B04.h5",
+   "size": 1201514624
+  },
+  {
+   "path": "data/mdcath_dataset_4uy4A00.h5",
+   "size": 1043234136
+  },
+  {
+   "path": "data/mdcath_dataset_4hd5A01.h5",
+   "size": 480189112
+  },
+  {
+   "path": "data/mdcath_dataset_1g01A00.h5",
+   "size": 1568204844
+  },
+  {
+   "path": "data/mdcath_dataset_3sxxA01.h5",
+   "size": 540371472
+  },
+  {
+   "path": "data/mdcath_dataset_3sqnA02.h5",
+   "size": 612515948
+  },
+  {
+   "path": "data/mdcath_dataset_4q11A00.h5",
+   "size": 641097116
+  },
+  {
+   "path": "data/mdcath_dataset_1uajA02.h5",
+   "size": 363973564
+  },
+  {
+   "path": "data/mdcath_dataset_1a0rP01.h5",
+   "size": 593998656
+  },
+  {
+   "path": "data/mdcath_dataset_3t5xA01.h5",
+   "size": 615133912
+  },
+  {
+   "path": "data/mdcath_dataset_4obxA00.h5",
+   "size": 1167353432
+  },
+  {
+   "path": "data/mdcath_dataset_4p02B01.h5",
+   "size": 548638320
+  },
+  {
+   "path": "data/mdcath_dataset_1pz3A02.h5",
+   "size": 1695600644
+  },
+  {
+   "path": "data/mdcath_dataset_1iq8A03.h5",
+   "size": 348463580
+  },
+  {
+   "path": "data/mdcath_dataset_2lvvA00.h5",
+   "size": 1113728836
+  },
+  {
+   "path": "data/mdcath_dataset_3rkoF01.h5",
+   "size": 813719284
+  },
+  {
+   "path": "data/mdcath_dataset_2wdcA03.h5",
+   "size": 1035222688
+  },
+  {
+   "path": "data/mdcath_dataset_4o30B00.h5",
+   "size": 1074668716
+  },
+  {
+   "path": "data/mdcath_dataset_4e1pA00.h5",
+   "size": 269886992
+  },
+  {
+   "path": "data/mdcath_dataset_1ztmA03.h5",
+   "size": 236987852
+  },
+  {
+   "path": "data/mdcath_dataset_3nznA00.h5",
+   "size": 518943856
+  },
+  {
+   "path": "data/mdcath_dataset_1lq9A00.h5",
+   "size": 502246348
+  },
+  {
+   "path": "data/mdcath_dataset_2vz8A07.h5",
+   "size": 1851958096
+  },
+  {
+   "path": "data/mdcath_dataset_3zc0D00.h5",
+   "size": 994924176
+  },
+  {
+   "path": "data/mdcath_dataset_3tpqM02.h5",
+   "size": 275128216
+  },
+  {
+   "path": "data/mdcath_dataset_2uwqA00.h5",
+   "size": 439725812
+  },
+  {
+   "path": "data/mdcath_dataset_4xgqA00.h5",
+   "size": 632393420
+  },
+  {
+   "path": "data/mdcath_dataset_1ft0B00.h5",
+   "size": 661484071
+  },
+  {
+   "path": "data/mdcath_dataset_1z6tA05.h5",
+   "size": 662747644
+  },
+  {
+   "path": "data/mdcath_dataset_4g08A01.h5",
+   "size": 359826092
+  },
+  {
+   "path": "data/mdcath_dataset_3r96B00.h5",
+   "size": 928421016
+  },
+  {
+   "path": "data/mdcath_dataset_4qxdB02.h5",
+   "size": 643565608
+  },
+  {
+   "path": "data/mdcath_dataset_2kjzA01.h5",
+   "size": 269515900
+  },
+  {
+   "path": "data/mdcath_dataset_4ak1A04.h5",
+   "size": 467389568
+  },
+  {
+   "path": "data/mdcath_dataset_2yx1A01.h5",
+   "size": 361009420
+  },
+  {
+   "path": "data/mdcath_dataset_4ca9A00.h5",
+   "size": 456100468
+  },
+  {
+   "path": "data/mdcath_dataset_1vwxM01.h5",
+   "size": 421045936
+  },
+  {
+   "path": "data/mdcath_dataset_2dv6A02.h5",
+   "size": 1523279752
+  },
+  {
+   "path": "data/mdcath_dataset_3qfmA00.h5",
+   "size": 1394077092
+  },
+  {
+   "path": "data/mdcath_dataset_1gmeA00.h5",
+   "size": 702062900
+  },
+  {
+   "path": "data/mdcath_dataset_1xf8A02.h5",
+   "size": 788310816
+  },
+  {
+   "path": "data/mdcath_dataset_2n00A00.h5",
+   "size": 518681496
+  },
+  {
+   "path": "data/mdcath_dataset_2lkmB00.h5",
+   "size": 866091860
+  },
+  {
+   "path": "data/mdcath_dataset_1wzaA03.h5",
+   "size": 388209523
+  },
+  {
+   "path": "data/mdcath_dataset_2b9sA02.h5",
+   "size": 450617924
+  },
+  {
+   "path": "data/mdcath_dataset_2jz7A00.h5",
+   "size": 422702288
+  },
+  {
+   "path": "data/mdcath_dataset_1bwuD00.h5",
+   "size": 496127624
+  },
+  {
+   "path": "data/mdcath_dataset_4cu9A00.h5",
+   "size": 841748932
+  },
+  {
+   "path": "data/mdcath_dataset_1c5kA02.h5",
+   "size": 1178772004
+  },
+  {
+   "path": "data/mdcath_dataset_1izcA00.h5",
+   "size": 1334791420
+  },
+  {
+   "path": "data/mdcath_dataset_2yrbA01.h5",
+   "size": 709339984
+  },
+  {
+   "path": "data/mdcath_dataset_4kr6A02.h5",
+   "size": 1087519696
+  },
+  {
+   "path": "data/mdcath_dataset_2qtsA04.h5",
+   "size": 403458236
+  },
+  {
+   "path": "data/mdcath_dataset_3c4sA00.h5",
+   "size": 306732728
+  },
+  {
+   "path": "data/mdcath_dataset_2kkmA01.h5",
+   "size": 672436600
+  },
+  {
+   "path": "data/mdcath_dataset_4f92B03.h5",
+   "size": 468477684
+  },
+  {
+   "path": "data/mdcath_dataset_3luyA02.h5",
+   "size": 345714304
+  },
+  {
+   "path": "data/mdcath_dataset_3l8iA01.h5",
+   "size": 284424164
+  }
+ ]
+}

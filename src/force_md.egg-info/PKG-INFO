@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: force-md
+Version: 0.1.0.dev0
+Summary: Force-conditioned protein MD ensemble model (hierarchical local physics + temporal transition)
+Requires-Python: >=3.11
+Requires-Dist: torch>=2.1
+Requires-Dist: e3nn>=0.5
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: PyYAML
+Provides-Extra: data
+Requires-Dist: h5py; extra == "data"
+Requires-Dist: huggingface_hub; extra == "data"
+Requires-Dist: tqdm; extra == "data"
+Provides-Extra: plm
+Requires-Dist: transformers; extra == "plm"
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"

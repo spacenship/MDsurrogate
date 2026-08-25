@@ -1,0 +1,20 @@
+# Core: needed for the model, losses and all offline tests.
+torch>=2.1
+e3nn>=0.5
+numpy
+scipy
+PyYAML
+pytest
+
+# Data: needed only to read real mdCATH shards and to download them.
+h5py
+huggingface_hub
+tqdm
+
+# PLM: needed only to precompute frozen ESM-2 embeddings. Training itself
+# consumes the cached tensors and never runs a PLM forward pass.
+transformers
+
+# Verified working set in the `md` conda env (Python 3.11.15):
+#   torch 2.13.0+cu130, e3nn 0.6.0, numpy 2.4.6, scipy 1.17.1,
+#   h5py 3.16.0, transformers 5.15.0, huggingface_hub 1.27.0, pytest 9.1.1

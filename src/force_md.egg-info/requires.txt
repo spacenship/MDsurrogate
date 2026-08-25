@@ -1,0 +1,16 @@
+torch>=2.1
+e3nn>=0.5
+numpy
+scipy
+PyYAML
+
+[data]
+h5py
+huggingface_hub
+tqdm
+
+[dev]
+pytest
+
+[plm]
+transformers
