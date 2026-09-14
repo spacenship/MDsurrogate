@@ -48,7 +48,7 @@ import numpy as np
 import torch
 from torch import Tensor
 
-from ...conditioning.esm2 import Esm2Config, Esm2EmbeddingCache
+from ...conditioning.esm2 import Esm2Config, Esm2EmbeddingCache, residue_sequence
 from ..contracts import (
     BackboneFrameBatch,
     HierarchicalProteinBatch,
@@ -64,6 +64,7 @@ from ..residue_constants import (
 )
 from ..synthetic import fake_plm_embedding
 from ..units import MDCATH_UNITS
+from ..residue_order import residue_order
 
 __all__ = ["MdCathConfig", "MdCathDataset", "TrainingExample", "split_domains"]
 
@@ -140,6 +141,7 @@ class MdCathConfig:
     max_domains: Optional[int] = None
     max_residues: Optional[int] = None
     allow_fake_plm: bool = False
+    load_plm: bool = True  # Heavy-flow supplies its own ESM-C features.
     check_pbc: bool = True
     plm_dim: int = 1280
     dtype: torch.dtype = torch.float32
@@ -218,6 +220,10 @@ class MdCathDataset(torch.utils.data.Dataset):
         self._files: dict[str, str] = {}
         self._handles: dict[str, object] = {}
         self._topology: dict[str, _Topology] = {}
+        # The normalizer only needs raw-force ordering and represented atom
+        # selection. Keep that cache separate so its pass does not have to
+        # load residue metadata or PLM embeddings.
+        self._force_selection: dict[str, tuple[Optional[np.ndarray], np.ndarray]] = {}
 
         for path in sorted(glob.glob(os.path.join(config.data_dir, "*.h5"))):
             domain = os.path.basename(path)[len("mdcath_dataset_") : -len(".h5")]
@@ -358,8 +364,7 @@ class MdCathDataset(torch.utils.data.Dataset):
                 "PDB text and the per-atom arrays disagree"
             )
 
-        unique_resid = np.unique(resid)
-        a2r_all = np.searchsorted(unique_resid, resid)
+        unique_resid, _, a2r_all = residue_order(resid, chain)
         atom_order: Optional[np.ndarray] = None
         if not np.all(np.diff(a2r_all) >= 0):
             atom_order = np.argsort(a2r_all, kind="stable")
@@ -411,12 +416,52 @@ class MdCathDataset(torch.utils.data.Dataset):
         self._topology[domain] = topo
         return topo
 
+    def _force_selection_for(
+        self, domain: str
+    ) -> tuple[Optional[np.ndarray], np.ndarray]:
+        """Return raw-to-model order and represented atom indices.
+
+        This deliberately does not call :meth:`_topology_for`, which would
+        also load residue semantics and the ESM-2 cache.  It reads only the
+        ``resid``/``element`` metadata needed to select represented atoms.
+        """
+        cached = self._force_selection.get(domain)
+        if cached is not None:
+            return cached
+
+        g = self._open(domain)[domain]
+        resid = np.asarray(g["resid"][:])
+        element = np.array([e.decode() for e in g["element"][:]])
+        if resid.shape[0] != element.shape[0]:
+            raise ValueError(
+                f"{domain}: resid and element arrays have different lengths "
+                f"({resid.shape[0]} vs {element.shape[0]})"
+            )
+
+        _, _, atom_to_residue = residue_order(resid, g["chain"][:])
+        atom_order: Optional[np.ndarray] = None
+        if not np.all(np.diff(atom_to_residue) >= 0):
+            atom_order = np.argsort(atom_to_residue, kind="stable")
+            element = element[atom_order]
+
+        represented = (
+            np.ones_like(element, dtype=bool)
+            if self.config.represented_scope == "all_atom"
+            else element != "H"
+        )
+        keep = np.nonzero(represented)[0]
+        cached = (atom_order, keep)
+        self._force_selection[domain] = cached
+        return cached
+
     def _plm_for(self, domain: str, residue_type: np.ndarray) -> Tensor:
+        if not self.config.load_plm:
+            return torch.empty((len(residue_type), 0), dtype=self.config.dtype)
         types = torch.tensor(residue_type, dtype=torch.int64)
         if self.config.esm2_cache_dir:
             cache = Esm2EmbeddingCache(self.config.esm2_cache_dir)
             if cache.exists(domain):
-                emb = cache.load(domain)
+                emb = cache.load(domain, expect_sequence=residue_sequence(types))
                 if emb.shape[0] != len(residue_type):
                     raise ValueError(
                         f"{domain}: cached embedding has {emb.shape[0]} rows for "
@@ -442,6 +487,29 @@ class MdCathDataset(torch.utils.data.Dataset):
     def topology_for(self, domain: str) -> _Topology:
         """Per-domain constants (atom order, residue map, PLM), read once."""
         return self._topology_for(domain)
+
+    def sequence_tokens_for(self, domain: str) -> np.ndarray:
+        """Return canonical residue IDs without loading coordinates or PLM data.
+
+        The returned IDs are the repository's ``RESIDUE_TYPES`` IDs, which are
+        converted to ESM-C amino-acid letters by :class:`ESMCEncoder`.  This
+        intentionally reads only the per-atom ``resid``/``resname`` topology
+        arrays, so ESM-C precomputation does not depend on the ESM-2 cache or on
+        any trajectory frame.
+        """
+        g = self._open(domain)[domain]
+        resid = np.asarray(g["resid"][:])
+        resname = np.array([r.decode() for r in g["resname"][:]])
+        if resid.ndim != 1 or resname.ndim != 1 or resid.shape != resname.shape:
+            raise ValueError(
+                f"{domain}: resid and resname must be matching 1-D arrays, "
+                f"got {resid.shape} and {resname.shape}"
+            )
+        _, first, _ = residue_order(resid, g["chain"][:])
+        return np.asarray(
+            [residue_type_id(resname[index]) for index in first],
+            dtype=np.int64,
+        )
 
     def __getitem__(self, i: int) -> TrainingExample:
         domain, temp, rep, frame = self.index[i]
@@ -518,19 +586,64 @@ class MdCathDataset(torch.utils.data.Dataset):
         coords = coords - coords.mean(axis=0, keepdims=True)
 
         if self.config.check_pbc:
-            ca = coords[topo.ca_index[topo.frame_atoms_complete]]
-            if len(ca) > 1:
-                d = np.linalg.norm(np.diff(ca, axis=0), axis=1)
+            valid_pairs = (topo.frame_atoms_complete[:-1] & topo.frame_atoms_complete[1:]
+                           & (topo.chain_index[:-1] == topo.chain_index[1:]))
+            if valid_pairs.any():
+                ca = coords[np.maximum(topo.ca_index, 0)]
+                d = np.linalg.norm(np.diff(ca, axis=0), axis=1)[valid_pairs]
                 if float(d.max()) > _MAX_CA_CA:
                     raise ValueError(
                         f"{domain}/{temp}/{rep} frame {frame}: CA-CA distance "
-                        f"{d.max():.2f} A exceeds {_MAX_CA_CA} A, so the chain is "
-                        "broken across the periodic boundary. This adapter does "
+                        f"{d.max():.2f} A exceeds {_MAX_CA_CA} A, the chain may be "
+                        "discontinuous or cross a periodic boundary. This adapter does "
                         "not unwrap; supply preprocessed coordinates."
                     )
 
         forces_valid = f"{temp}/{rep}" not in self.quarantine.get(domain, set())
         return coords, forces, forces_valid
+
+    def load_force_arrays(
+        self, domain: str, temp: str, rep: str, frame: int
+    ) -> tuple[np.ndarray, np.ndarray]:
+        """Read only represented forces and the corresponding validity mask.
+
+        This is the lightweight path for the global force normalizer.  It reads
+        the force frame, ``resid``/``element`` metadata needed to reproduce the
+        configured atom order and heavy-atom selection, and the force
+        quarantine state.  It intentionally does not read coordinates, residue
+        semantics, backbone data, or PLM embeddings.
+
+        The returned force rows are in exactly the same represented atom order
+        as :meth:`build_example`.  A quarantined trajectory returns an
+        all-false per-atom mask, matching the training loss semantics.
+        """
+        corrupt = self.coord_quarantine.get(domain, {}).get(f"{temp}/{rep}", set())
+        if int(frame) in corrupt:
+            raise ValueError(
+                f"{domain}/{temp}/{rep} frame {frame} is excluded by the "
+                "coordinate quarantine"
+            )
+
+        atom_order, keep = self._force_selection_for(domain)
+        g = self._open(domain)[domain][temp][rep]
+        forces = np.asarray(g["forces"][frame], dtype=np.float64)
+        expected_raw = int(g["forces"].shape[1])
+        if forces.ndim != 2 or forces.shape[-1] != 3:
+            raise ValueError(
+                f"{domain}/{temp}/{rep} frame {frame}: forces must have "
+                f"shape [N,3], got {tuple(forces.shape)}"
+            )
+        if forces.shape[0] != expected_raw:
+            raise ValueError(
+                f"{domain}/{temp}/{rep} frame {frame}: force frame has "
+                f"{forces.shape[0]} atoms, expected {expected_raw}"
+            )
+        if atom_order is not None:
+            forces = forces[atom_order]
+        forces = forces[keep]
+        trajectory_valid = f"{temp}/{rep}" not in self.quarantine.get(domain, set())
+        force_mask = np.full((forces.shape[0],), trajectory_valid, dtype=bool)
+        return forces, force_mask
 
     def build_example(
         self,

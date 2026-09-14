@@ -38,7 +38,13 @@ from .vertical import (
     ResidueToBackboneInjection,
 )
 
-__all__ = ["EncoderConfig", "EncoderOutput", "AtomEmbedding", "HierarchicalPhysicsEncoder"]
+__all__ = [
+    "EncoderConfig",
+    "EncoderOutput",
+    "PairIntermediates",
+    "AtomEmbedding",
+    "HierarchicalPhysicsEncoder",
+]
 
 _MAX_Z = 20  # covers H, C, N, O, S with room to spare
 
@@ -72,6 +78,68 @@ class EncoderConfig:
 
 
 @dataclass
+class PairIntermediates:
+    """Per-edge messages of the residue-pair (backbone) level, **global frame**.
+
+    This is the tensor a single message pass actually computes and then throws
+    away: ``m_ij = TP(h_j, Y(r_ij); w(d_ij, type, h_i, h_j))`` for the edge
+    ``src=j -> dst=i``, before ``scatter_sum`` collapses it onto the receiving
+    node. It is the closest thing Phase 1 has to a *pair interaction latent*, and
+    it exists only because :meth:`HierarchicalPhysicsEncoder.forward` was asked
+    for it -- the default path is unchanged.
+
+    Taken from the **last backbone block of the last cycle**, so the node features
+    feeding it have been through the whole hierarchy.
+
+    Args:
+        src / dst: ``[E]`` residue indices. Messages flow ``src -> dst``.
+        edge_type: ``[E]`` relation sub-type (sequence offset bucket or spatial).
+        num_types: size of that vocabulary, for embedding tables downstream.
+        message: ``[E, irreps.dim]`` the message itself, carrying ``irreps``.
+        irreps: message irreps, e.g. ``88x0e+104x1o+96x2e`` at the Phase 1 widths.
+            **Not** the node irreps: a ``uvu`` product produces its own set.
+        distance: ``[E]`` ``|r_ij|`` in Angstrom.
+        unit_vector: ``[E, 3]`` direction from ``src`` to ``dst``, global frame.
+
+    There is no triplet or higher-order edge object here and none is invented.
+    Phase 1's body-order-3 term is a *node*-level ``o3.TensorSquare``, so that
+    information already lives in ``residue_features``.
+    """
+
+    src: Tensor
+    dst: Tensor
+    edge_type: Tensor
+    num_types: int
+    message: Tensor
+    irreps: o3.Irreps
+    distance: Tensor
+    unit_vector: Tensor
+
+    @property
+    def num_edges(self) -> int:
+        return int(self.src.shape[0])
+
+    def _map(self, fn) -> "PairIntermediates":
+        from dataclasses import replace as _replace
+
+        return _replace(
+            self,
+            src=fn(self.src),
+            dst=fn(self.dst),
+            edge_type=fn(self.edge_type),
+            message=fn(self.message),
+            distance=fn(self.distance),
+            unit_vector=fn(self.unit_vector),
+        )
+
+    def to(self, device) -> "PairIntermediates":
+        return self._map(lambda t: t.to(device))
+
+    def detach(self) -> "PairIntermediates":
+        return self._map(lambda t: t.detach())
+
+
+@dataclass
 class EncoderOutput:
     """Per-level equivariant features, all in the **global frame**.
 
@@ -82,12 +150,15 @@ class EncoderOutput:
             ``batch.residues``) are a frozen contract.
         backbone_features: ``[N_res, D]``.
         irreps: the irreps every one of the above carries.
+        pair: residue-pair messages, only when they were asked for. ``None`` on
+            the default path, so nothing that existed before pays for them.
     """
 
     atom_features: Tensor
     residue_features: Tensor
     backbone_features: Tensor
     irreps: o3.Irreps
+    pair: Optional[PairIntermediates] = None
 
     @property
     def physics_latent(self) -> Tensor:
@@ -213,7 +284,16 @@ class HierarchicalPhysicsEncoder(nn.Module):
         batch: HierarchicalProteinBatch,
         graph: HierarchicalGraph,
         frames: Optional[ResidueFrames] = None,
+        *,
+        return_pair_messages: bool = False,
     ) -> EncoderOutput:
+        """Encode one batch.
+
+        Args:
+            return_pair_messages: also return the last backbone block's per-edge
+                messages as :class:`PairIntermediates`. Default off: the Phase 1
+                training path must keep the memory profile it was tuned at.
+        """
         local_coords, frames = atom_local_coordinates(batch, frames)
 
         atom_edges = merge_edge_sets(
@@ -236,6 +316,8 @@ class HierarchicalPhysicsEncoder(nn.Module):
             (batch.num_residues, self.irreps.dim)
         )
 
+        pair_messages: Optional[Tensor] = None
+        last_cycle = self.config.num_cycles - 1
         for c in range(self.config.num_cycles):
             if self.config.use_atom_branch:
                 atom_features = self.atom_blocks[c](
@@ -248,9 +330,15 @@ class HierarchicalPhysicsEncoder(nn.Module):
                 backbone_features, pooled, residue_scalars
             )
             if self.config.use_backbone_branch:
-                backbone_features = self.backbone_blocks[c](
-                    backbone_features, bb_edges, bb_sh, bb_geom.distance
+                want = return_pair_messages and c == last_cycle
+                result = self.backbone_blocks[c](
+                    backbone_features, bb_edges, bb_sh, bb_geom.distance,
+                    return_messages=want,
                 )
+                if want:
+                    backbone_features, pair_messages = result
+                else:
+                    backbone_features = result
                 residue_features = self.backbone_to_residue[c](
                     residue_features, backbone_features, batch.backbone.residue_to_backbone
                 )
@@ -260,9 +348,34 @@ class HierarchicalPhysicsEncoder(nn.Module):
                 atom_features, residue_features, batch.atoms.atom_to_residue
             )
 
+        pair = None
+        if return_pair_messages:
+            if not self.config.use_backbone_branch:
+                raise ValueError(
+                    "pair messages were requested but use_backbone_branch is False: "
+                    "there is no residue-pair message pass to read them from"
+                )
+            block = self.backbone_blocks[last_cycle]
+            if pair_messages is None:
+                # An empty residue graph is legal (one-residue protein); an empty
+                # message tensor of the right width keeps every consumer's shape
+                # arithmetic valid instead of making them special-case None.
+                pair_messages = residue_features.new_zeros((0, block.irreps_message.dim))
+            pair = PairIntermediates(
+                src=bb_edges.src,
+                dst=bb_edges.dst,
+                edge_type=bb_edges.edge_type,
+                num_types=bb_edges.num_types,
+                message=pair_messages,
+                irreps=block.irreps_message,
+                distance=bb_geom.distance,
+                unit_vector=bb_geom.unit_vector,
+            )
+
         return EncoderOutput(
             atom_features=atom_features,
             residue_features=residue_features,
             backbone_features=backbone_features,
             irreps=self.irreps,
+            pair=pair,
         )

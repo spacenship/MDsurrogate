@@ -42,12 +42,15 @@ from force_md.training.transition_module import (  # noqa: E402
     TransitionTrainer,
 )
 from force_md.transition import (  # noqa: E402
+    CANONICAL_ARMS,
+    CONDITIONER_ARMS,
     ConditionerConfig,
     FrozenPhase1Extractor,
     MetricConfig,
     TransitionLossWeights,
     TransitionProbe,
     TransitionProbeConfig,
+    canonical_name,
 )
 
 
@@ -78,8 +81,9 @@ def build_configs(raw: dict, arm: str | None):
         selection=data.get("selection", "even"),
         seed=data.get("split_seed", 0),
     )
+    resolved_arm = arm or model.get("arm", "structure_only")
     probe = TransitionProbeConfig(
-        arm=arm or model.get("arm", "structure_only"),
+        arm=resolved_arm,
         conditioner=ConditionerConfig(**model.get("conditioner", {})),
         irreps=IrrepsConfig(**model.get("irreps", {})),
         num_blocks=model.get("num_blocks", 3),
@@ -89,13 +93,67 @@ def build_configs(raw: dict, arm: str | None):
         backbone_cutoff=model.get("backbone_cutoff", 13.0),
         use_plm=model.get("use_plm", True),
         use_temperature=model.get("use_temperature", True),
+        # P4 only, and decided by the arm rather than by the config file: an arm
+        # whose auxiliary head could be switched off by an unrelated YAML edit is
+        # an arm that can silently become a copy of P2.
+        future_physics=needs_future_physics(resolved_arm),
     )
+    train = dict(train)
+    if probe.future_physics:
+        if not train.get("future_physics_weight"):
+            raise ValueError(
+                f"arm {resolved_arm!r} needs train.future_physics_weight > 0 in the "
+                "config; with weight 0 its auxiliary head trains nothing and the "
+                "arm is P2 under another name"
+            )
+    else:
+        # One config file serves every arm of an ablation, so it carries P4's
+        # weight for P4's benefit. For every other arm the term does not exist and
+        # the weight is zeroed here rather than left to look like it applies.
+        train["future_physics_weight"] = 0.0
     training = TransitionTrainConfig(
         loss_weights=TransitionLossWeights(**train.pop("loss_weights", {})),
         metrics=MetricConfig(**train.pop("metrics", {})),
         **train,
     )
     return pairs, probe, training, data
+
+
+def needs_pair_features(arm: str) -> bool:
+    """Does this arm read Phase 1's residue-pair messages?
+
+    Asked of the registered conditioner class, so adding an arm cannot forget to
+    update a list here. Note ``P0`` answers **True**: it uses the pair *graph* --
+    the same edges, the same order -- while deliberately ignoring the message on
+    it, and a control built on a different graph would not be a control.
+    """
+    return bool(CONDITIONER_ARMS[arm].requires_pair_features)
+
+
+def needs_future_physics(arm: str) -> bool:
+    spec = CANONICAL_ARMS.get(canonical_name(arm))
+    return bool(spec and spec.future_physics)
+
+
+def build_extractor(raw: dict, arm: str, device: str) -> FrozenPhase1Extractor:
+    """Frozen Phase 1, configured for what this arm actually needs."""
+    return FrozenPhase1Extractor.from_checkpoint(
+        raw["phase1"]["checkpoint"],
+        device=device,
+        expect=raw["phase1"].get("expect_contract"),
+        extract_pair_features=needs_pair_features(arm),
+    )
+
+
+def build_probe(probe_config, extractor: FrozenPhase1Extractor) -> TransitionProbe:
+    """Build the probe against the checkpoint's own contracts, never a constant."""
+    return TransitionProbe(
+        probe_config,
+        latent_irreps=extractor.contract["physics_latent_irreps"],
+        message_irreps=(extractor.metadata.get("pair_contract") or {}).get(
+            "pair_message_irreps"
+        ),
+    )
 
 
 def _tuple(value):
@@ -187,14 +245,8 @@ def main() -> int:
     val_loader = make_loader(val_ds, batch_size, shuffle=False, workers=workers,
                              seed=train_config.seed)
 
-    extractor = FrozenPhase1Extractor.from_checkpoint(
-        raw["phase1"]["checkpoint"],
-        device=train_config.device,
-        expect=raw["phase1"].get("expect_contract"),
-    )
-    probe = TransitionProbe(
-        probe_config, latent_irreps=extractor.contract["physics_latent_irreps"]
-    )
+    extractor = build_extractor(raw, probe_config.arm, train_config.device)
+    probe = build_probe(probe_config, extractor)
     trainer = TransitionTrainer(probe, extractor, train_config, manifest=train_manifest)
 
     provenance = trainer.provenance()

@@ -1,0 +1,36 @@
+architecture_version: heavy_flow_v2_geometry_context_pair_messages
+history:
+  length: 3  # includes the current frame
+  stride_frames: 1  # raw stored frames; independent of prediction lag
+  missing_policy: repeat_earliest  # repeat frame 0 only; quarantined frames exclude the sample
+# Heavy-flow Stage 1 foundation. This is intentionally a new configuration
+# namespace; no H0/H1/H2 checkpoint or loss is referenced here.
+model:
+  sequence_encoder:
+    family: ESMC-300M
+    backend: esmc
+    model_name: models/ESMC-300M
+    revision: local-ESMC-300M
+    model_cache_dir: models/ESMC-300M
+    cache_dir: outputs/heavy_flow/esmc_cache
+    preprocessing_version: heavy_flow_esmc_sequence_v1
+    projected_dim: 64
+    cache_only: true
+  graph:
+    spatial_cutoff_angstrom: 6.0
+    max_spatial_neighbors: 32
+    include_covalent_edges: true
+    include_chain_adjacent_edges: false
+  geometry:
+    num_blocks: 4
+    lmax: 2
+    hidden_irreps: "96x0e + 24x1o + 8x1e + 8x2e"
+    radial_basis: 16
+data:
+  represented_scope: heavy_atom
+  force_scope: direct_heavy_atom
+  length_unit: angstrom
+  force_unit: kcal/mol/angstrom
+  temperature_unit: kelvin
+  time_unit: frame
+  time_per_frame: 1000.0  # ps, supplied by mdCATH provenance, not stored in HDF5

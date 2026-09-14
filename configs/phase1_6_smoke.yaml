@@ -1,0 +1,93 @@
+# Phase 1.6 smoke -- Stage A. A few domains, a few steps. Minutes, not hours.
+#
+#   python scripts/run_phase1_6_ablation.py --config configs/phase1_6_smoke.yaml
+#
+# Its job is to prove that S0-S2, O and P0-P4 all run on one manifest with one
+# output contract, and that the leakage guards fire. **No number from this file
+# is a result** -- 8 domains cannot measure a sub-1% effect.
+#
+# Same shape as configs/phase1_5_smoke.yaml on purpose: everything the two share
+# is literally the same value, so a difference between a Phase 1.5 and a
+# Phase 1.6 smoke run is about the new arms and nothing else.
+
+phase1:
+  checkpoint: runs/phase1_full/last.pt   # NOT phase1_full_rerun: the Phase 1.5
+                                         # results this compares against were
+                                         # produced against these weights
+  expect_contract:
+    physics_latent_irreps: 64x0e+16x1o+8x2e
+    physics_latent_dim: 152
+    frame: global
+    target_scope: heavy_atom
+
+data:
+  data_dir: data
+  esm2_cache_dir: esm2_cache
+  quarantine_path: mdcath_force_quarantine.json
+  coord_quarantine_path: mdcath_coord_quarantine.json
+  ps_per_frame: 1000.0
+  lags_ps: [1000.0, 4000.0]         # 1 ns and 4 ns, both required by the plan
+  history_length: 2
+  max_residues: 250
+  temperatures: [320]
+  replicas: [0]
+  pairs_per_trajectory: 2
+  max_domains: 8
+  val_fraction: 0.2
+  split_seed: 0
+  phase1_split_snapshot: runs/phase1_full/config_snapshot.json
+  batch_size: 4
+  num_workers: 0
+
+model:
+  arm: structure_only               # overridden per arm by the runner
+  num_blocks: 3
+  residue_knn: 16
+  sequence_max_offset: 2
+  backbone_cutoff: 13.0             # also the span of the pair distance basis
+  use_plm: true
+  use_temperature: true
+  irreps:
+    lmax: 2
+    scalar_channels: 32
+    vector_channels: 8
+    tensor_channels: 4
+  conditioner:
+    d_cond: 64                      # identical for every arm, including the zero one
+    hidden: 128
+    atom_message_dim: 64
+    uncertainty_gating: true
+    # -- pair arms (P0-P4). P0's hidden width is not listed because it is
+    # *derived*: matched_hidden_width() solves it so the geometry control has the
+    # physics arm's parameter count. Setting it by hand would let the two drift.
+    d_pair: 32
+    pair_hidden: 128
+    pair_message_dim: 64
+    pair_relation_types: 6          # Phase 1's backbone relation vocabulary
+    gate_hidden: 32
+
+train:
+  seed: 0
+  learning_rate: 1.0e-3
+  warmup_steps: 20
+  lr_schedule: cosine
+  min_lr_factor: 0.05
+  max_steps: 100
+  eval_every: 50
+  log_every: 25
+  grad_clip: 10.0
+  device: cuda:0
+  future_physics_weight: 0.1        # P4 only; zeroed for every other arm
+  future_physics_huber_delta: 1.0
+  loss_weights:
+    translation: 1.0
+    rotation: 1.0
+    pair_distance: 0.1
+    clash: 0.0
+    translation_scale_angstrom: 2.5
+    rotation_scale_radians: 0.59
+    rotation_loss: chordal
+  metrics:
+    contact_cutoff: 8.0
+    contact_sequence_separation: 3
+    clash_min_ca_distance: 3.6

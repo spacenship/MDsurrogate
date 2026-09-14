@@ -41,7 +41,13 @@ from force_md.transition import (  # noqa: E402
     FrozenPhase1Extractor,
     TransitionProbe,
 )
-from train_transition import build_configs, build_datasets, make_loader  # noqa: E402
+from train_transition import (  # noqa: E402
+    build_configs,
+    build_datasets,
+    build_extractor,
+    build_probe,
+    make_loader,
+)
 
 #: Order matters only for readability; the arms are independent.
 DEFAULT_ARMS = (
@@ -178,13 +184,8 @@ def main() -> int:
             workers=data.get("num_workers", 0), seed=seed,
         )
 
-        extractor = FrozenPhase1Extractor.from_checkpoint(
-            raw["phase1"]["checkpoint"], device=train_config.device,
-            expect=raw["phase1"].get("expect_contract"),
-        )
-        probe = TransitionProbe(
-            probe_config, latent_irreps=extractor.contract["physics_latent_irreps"]
-        )
+        extractor = build_extractor(raw, arm, train_config.device)
+        probe = build_probe(probe_config, extractor)
         trainer = TransitionTrainer(probe, extractor, train_config, manifest=train_manifest)
         provenance = trainer.provenance()
 

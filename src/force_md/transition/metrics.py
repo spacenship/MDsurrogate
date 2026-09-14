@@ -346,6 +346,8 @@ def metric_records(
     split: str = "val",
     config: MetricConfig = MetricConfig(),
     include_identity: bool = True,
+    temperatures: Optional[Sequence[str]] = None,
+    pair_ids: Optional[Sequence[str]] = None,
 ) -> list[dict]:
     """One tidy row per graph, ready for a CSV.
 
@@ -354,6 +356,19 @@ def metric_records(
             come from the manifest's :class:`~force_md.data.adapters.lag_pairs.LagPair`
             rows; they are passed in rather than read from the batch so this
             module does not depend on the dataset layer.
+        temperatures: optional per-graph mdCATH temperature group, so a result can
+            be stratified by it afterwards. Optional because a record without it is
+            still a valid record; recorded when available because "does the effect
+            survive at 450 K" cannot be asked of a table that never wrote the
+            temperature down.
+        pair_ids: optional ``LagPair.pair_id`` per graph -- the **unique** identity
+            of an evaluation sample (domain, temperature, replica, current frame,
+            lag). Without it a downstream paired analysis has nothing finer than
+            ``(domain, temperature, lag)`` to key on, and every replica and frame
+            of one trajectory collapses onto one row: measured, that turned 1,760
+            pairs per lag into 150 and moved the identity baseline by 18%. The
+            collapse is silent, which is why the id is written rather than
+            reconstructed.
     """
     if len(domains) != target.num_graphs or len(lag_ps) != target.num_graphs:
         raise ValueError(
@@ -376,6 +391,10 @@ def metric_records(
             "residue_count": count,
             **row,
         }
+        if temperatures is not None:
+            record["temperature"] = str(temperatures[graph])
+        if pair_ids is not None:
+            record["pair_id"] = str(pair_ids[graph])
         record.update({f"{k}_identity": v for k, v in base.items()})
         records.append(record)
     return records

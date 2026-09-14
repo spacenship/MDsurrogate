@@ -26,7 +26,13 @@ from .so3 import (
     so3_exp_map,
     so3_log_map,
 )
-from .torsions import backbone_torsions, dihedral_angle, sequence_neighbours, wrap_to_pi
+from .torsions import (
+    backbone_omega,
+    backbone_torsions,
+    dihedral_angle,
+    sequence_neighbours,
+    wrap_to_pi,
+)
 
 __all__ = [
     "ResidueFrames",
@@ -60,5 +66,6 @@ __all__ = [
     "dihedral_angle",
     "sequence_neighbours",
     "backbone_torsions",
+    "backbone_omega",
     "wrap_to_pi",
 ]

@@ -14,6 +14,19 @@ from .metrics import (
     per_graph_transition_metrics,
     transition_metrics,
 )
+from .extended_metrics import (
+    EXTENDED_COUNT_KEYS,
+    EXTENDED_METRIC_KEYS,
+    HIGHER_IS_BETTER,
+    NOT_APPLICABLE,
+    ExtendedMetricConfig,
+    RecordContext,
+    extended_graph_metrics,
+    extended_metric_records,
+    jensen_shannon,
+    length_bin,
+    torsion_histogram,
+)
 from .conditioners import (
     CONDITIONER_ARMS,
     ConditionerConfig,
@@ -26,7 +39,36 @@ from .conditioners import (
     build_conditioner,
     precision_weights,
 )
+from .arms import (
+    CANONICAL_ARMS,
+    MECHANISM_ARMS,
+    SCREENING_ARMS,
+    ArmSpec,
+    arm_spec,
+    canonical_name,
+    implementation_name,
+)
+from .future_physics import (
+    FuturePhysicsHead,
+    future_physics_loss,
+    future_physics_target,
+    future_state_batch,
+)
 from .local_frame import IrrepsLocalFrame
+from .pair_physics import (
+    EDGE_GEOMETRY_DIM,
+    ConditionerContext,
+    GeometryPairSource,
+    PairGeometryControlConditioner,
+    PairInteractionConditioner,
+    PairPhysicsConditioner,
+    PairPhysicsFutureConditioner,
+    PairPhysicsMomentsConditioner,
+    PairPhysicsUncertaintyConditioner,
+    PhysicsPairSource,
+    edge_geometry_features,
+    matched_hidden_width,
+)
 from .losses import TransitionLossWeights, transition_loss
 from .moments import ForceMoments, ResidueShape, force_moments, residue_shape
 from .phase1_features import (
@@ -90,6 +132,30 @@ __all__ = [
     "CONDITIONER_ARMS",
     "build_conditioner",
     "precision_weights",
+    # -- Phase 1.6 --------------------------------------------------------
+    "ArmSpec",
+    "CANONICAL_ARMS",
+    "SCREENING_ARMS",
+    "MECHANISM_ARMS",
+    "arm_spec",
+    "canonical_name",
+    "implementation_name",
+    "ConditionerContext",
+    "PairInteractionConditioner",
+    "PairGeometryControlConditioner",
+    "PairPhysicsConditioner",
+    "PairPhysicsMomentsConditioner",
+    "PairPhysicsUncertaintyConditioner",
+    "PairPhysicsFutureConditioner",
+    "PhysicsPairSource",
+    "GeometryPairSource",
+    "edge_geometry_features",
+    "matched_hidden_width",
+    "EDGE_GEOMETRY_DIM",
+    "FuturePhysicsHead",
+    "future_state_batch",
+    "future_physics_target",
+    "future_physics_loss",
     "IrrepsLocalFrame",
     "ForceMoments",
     "ResidueShape",
@@ -104,4 +170,16 @@ __all__ = [
     "HISTORY_FEATURE_DIM",
     "TransitionLossWeights",
     "transition_loss",
+    # -- Phase 1.6 extended metrics (Stage M) -----------------------------
+    "ExtendedMetricConfig",
+    "RecordContext",
+    "EXTENDED_METRIC_KEYS",
+    "EXTENDED_COUNT_KEYS",
+    "HIGHER_IS_BETTER",
+    "NOT_APPLICABLE",
+    "extended_graph_metrics",
+    "extended_metric_records",
+    "length_bin",
+    "torsion_histogram",
+    "jensen_shannon",
 ]

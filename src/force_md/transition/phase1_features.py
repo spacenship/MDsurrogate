@@ -49,6 +49,7 @@ from ..geometry.frames import (
     link_backbone_to_atom_positions,
 )
 from ..models.local_physics import LocalPhysicsConfig, LocalPhysicsModel
+from ..nn.hierarchical_encoder import PairIntermediates
 
 __all__ = [
     "FeatureBundle",
@@ -63,7 +64,9 @@ __all__ = [
 
 #: Bumped when the bundle's field set changes, so a stale cache shard is rejected
 #: instead of being read under new column meanings.
-FEATURE_FORMAT_VERSION = 1
+#:
+#: 2 (Phase 1.6): the bundle may carry residue-pair message intermediates.
+FEATURE_FORMAT_VERSION = 2
 
 
 @dataclass
@@ -103,6 +106,13 @@ class FeatureBundle:
         atom_valid: ``[N_atom]`` bool -- parent residue valid.
         residue_batch_index / atom_batch_index: ``[N]`` graph ids.
         num_graphs: graphs in this bundle.
+        pair: ``PairIntermediates`` or ``None`` -- Phase 1's residue-pair messages
+            for this state, present only when the extractor was built with
+            ``extract_pair_features=True``. Global frame, like the node latent, and
+            like it not new observational information: it is a *function of the
+            current structure*, computed by weights that were trained on force
+            labels. It is **predicted physics, never a label** -- the ground-truth
+            forces still live only in :class:`OracleFeatureBundle`.
     """
 
     physics_latent: Tensor
@@ -128,6 +138,28 @@ class FeatureBundle:
     residue_batch_index: Tensor
     atom_batch_index: Tensor
     num_graphs: int
+    pair: Optional[PairIntermediates] = None
+
+    @property
+    def has_pair(self) -> bool:
+        return self.pair is not None
+
+    def require_pair(self) -> PairIntermediates:
+        """The pair messages, or a message saying how to turn them on.
+
+        A conditioner that needs them must call this rather than reading the
+        attribute: silently conditioning on nothing would show up as "the pair
+        arm is no better than the control", which is precisely the conclusion the
+        experiment is trying to reach honestly.
+        """
+        if self.pair is None:
+            raise ValueError(
+                "this FeatureBundle carries no pair messages. Build the extractor "
+                "with FrozenPhase1Extractor.from_checkpoint(..., "
+                "extract_pair_features=True); a pair arm conditioned on nothing "
+                "would look like a null result rather than a bug."
+            )
+        return self.pair
 
     @property
     def num_residues(self) -> int:
@@ -147,6 +179,8 @@ class FeatureBundle:
             for f in dataclasses.fields(self)
             if isinstance(getattr(self, f.name), Tensor)
         }
+        if self.pair is not None:
+            moved["pair"] = self.pair.to(device)
         return replace(self, frames=self.frames.to(device), **moved)
 
     def requires_grad_state(self) -> dict[str, bool]:
@@ -245,12 +279,16 @@ class FrozenPhase1Extractor(nn.Module):
         *,
         freeze: bool = True,
         metadata: Optional[dict] = None,
+        extract_pair_features: bool = False,
     ):
         super().__init__()
         self.phase1 = model
         self.contract = dict(contract)
         self.freeze = freeze
+        self.extract_pair_features = extract_pair_features
         self.metadata = dict(metadata or {})
+        if extract_pair_features:
+            self.metadata["pair_contract"] = model.pair_contract()
         if freeze:
             self.phase1.eval()
             for parameter in self.phase1.parameters():
@@ -267,6 +305,7 @@ class FrozenPhase1Extractor(nn.Module):
         freeze: bool = True,
         expect: Optional[dict] = None,
         compute_fingerprint: bool = True,
+        extract_pair_features: bool = False,
     ) -> "FrozenPhase1Extractor":
         """Restore Phase 1 without touching the file.
 
@@ -316,7 +355,10 @@ class FrozenPhase1Extractor(nn.Module):
         }
         if compute_fingerprint:
             metadata["checkpoint_sha256"] = checkpoint_fingerprint(path)
-        return cls(model, live, freeze=freeze, metadata=metadata)
+        return cls(
+            model, live, freeze=freeze, metadata=metadata,
+            extract_pair_features=extract_pair_features,
+        )
 
     # -- extraction --------------------------------------------------------
 
@@ -329,7 +371,9 @@ class FrozenPhase1Extractor(nn.Module):
 
     def _extract(self, batch: HierarchicalProteinBatch) -> FeatureBundle:
         linked = link_backbone_to_atom_positions(batch)
-        output = self.phase1(linked)
+        output = self.phase1(
+            linked, return_pair_messages=self.extract_pair_features
+        )
         local, frames = atom_local_coordinates(linked)
 
         residue_valid = frames.valid & linked.residues.mask
@@ -360,9 +404,33 @@ class FrozenPhase1Extractor(nn.Module):
             residue_batch_index=linked.residues.batch_index,
             atom_batch_index=linked.atoms.batch_index,
             num_graphs=linked.num_graphs,
+            pair=None if output.pair is None else (
+                output.pair.detach() if self.freeze else output.pair
+            ),
         )
         _check_bundle_against_contract(bundle, self.contract)
         return bundle
+
+    def node_latent(self, batch: HierarchicalProteinBatch) -> Tensor:
+        """``physics_latent`` alone, ``[N_res, D]``, global frame.
+
+        For the ``P4`` auxiliary target, which needs Phase 1's view of the
+        **future** structure and nothing else. It deliberately does not build a
+        :class:`FeatureBundle`: a bundle is the thing conditioners consume, and
+        one built from a future state must not exist in the first place. Pair
+        messages are not computed here either -- the target does not use them and
+        they are the expensive part.
+        """
+        if self.freeze:
+            with torch.no_grad():
+                return self._node_latent(batch)
+        return self._node_latent(batch)
+
+    def _node_latent(self, batch: HierarchicalProteinBatch) -> Tensor:
+        linked = link_backbone_to_atom_positions(batch)
+        output = self.phase1(linked, return_pair_messages=False)
+        latent = output.physics_latent
+        return latent.detach() if self.freeze else latent
 
     def oracle_bundle(self, batch: HierarchicalProteinBatch) -> OracleFeatureBundle:
         """Ground-truth forces plus the production features. Diagnostic arm only.
@@ -447,7 +515,22 @@ _ATOM_FIELDS = (
 
 
 def split_bundle(bundle: FeatureBundle, graph: int) -> FeatureBundle:
-    """One graph's rows, renumbered as a standalone single-graph bundle."""
+    """One graph's rows, renumbered as a standalone single-graph bundle.
+
+    Raises:
+        ValueError: if the bundle carries pair messages. Splitting them means
+            re-indexing an edge set, and an edge whose endpoints are renumbered
+            wrongly is invisible -- it just conditions one residue on another
+            protein. Refusing is the honest option until a pair arm actually needs
+            the on-disk cache; Phase 1.6 recomputes instead.
+    """
+    if bundle.pair is not None:
+        raise ValueError(
+            "split_bundle() cannot shard a bundle carrying pair messages: the "
+            "edge index would have to be renumbered and filtered per graph, and a "
+            "mis-renumbered edge silently conditions one protein on another. "
+            "Extract without pair features to cache, or recompute per batch."
+        )
     residues = (bundle.residue_batch_index == graph).nonzero(as_tuple=True)[0]
     atoms = (bundle.atom_batch_index == graph).nonzero(as_tuple=True)[0]
     remap = torch.full_like(bundle.residue_batch_index, -1)
@@ -538,10 +621,18 @@ class Phase1FeatureCache:
     precompute step, not for DataLoader workers racing on one shard.
     """
 
-    def __init__(self, root: str, *, checkpoint_sha256: str, config_hash: str):
+    def __init__(
+        self,
+        root: str,
+        *,
+        checkpoint_sha256: str,
+        config_hash: str,
+        pair_features: bool = False,
+    ):
         self.root = root
         self.checkpoint_sha256 = checkpoint_sha256
         self.config_hash = config_hash
+        self.pair_features = bool(pair_features)
 
     @staticmethod
     def frame_key(domain: str, temperature: str, replica: str, frame: int) -> str:
@@ -557,6 +648,11 @@ class Phase1FeatureCache:
             "format_version": FEATURE_FORMAT_VERSION,
             "checkpoint_sha256": self.checkpoint_sha256,
             "config_hash": self.config_hash,
+            # Which *arm family* the shard was written for. A pair arm reading a
+            # node-only shard would condition on nothing and report it as a null
+            # result, so the two are different caches, not one cache with a
+            # missing column.
+            "pair_features": self.pair_features,
         }
 
     def exists(self, domain: str) -> bool:

@@ -19,6 +19,7 @@ h5py = pytest.importorskip("h5py")
 
 from force_md.data import residue_constants as rc  # noqa: E402
 from force_md.data.psf import parse_psf_bonds  # noqa: E402
+from force_md.data.residue_order import residue_order
 from force_md.graph import build_covalent_bonds  # noqa: E402
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
@@ -37,6 +38,7 @@ def _load(path):
         n_atom = int(g.attrs["numProteinAtoms"])
         z = torch.tensor(g["z"][:], dtype=torch.int64)
         resid = np.asarray(g["resid"][:])
+        chain = g["chain"][:]
         names = [
             line[12:16].strip()
             for line in g["pdbProteinAtoms"][()].decode().split("\n")
@@ -46,8 +48,7 @@ def _load(path):
         temp = sorted(k for k in g.keys() if k.isdigit())[0]
         rep = sorted(g[temp].keys())[0]
         x = torch.tensor(g[temp][rep]["coords"][0], dtype=torch.float64)
-    _, first = np.unique(resid, return_index=True)
-    a2r = torch.tensor(np.searchsorted(np.unique(resid), resid), dtype=torch.int64)
+    a2r = torch.tensor(residue_order(resid, chain)[2], dtype=torch.int64)
     return dom, n_atom, z, a2r, names, psf, x
 
 
@@ -134,7 +135,8 @@ def _load_frame(path, replica="4"):
         g = f[dom]
         el = np.array([e.decode() for e in g["element"][:]])
         resid = np.asarray(g["resid"][:])
-        a2r = torch.tensor(np.searchsorted(np.unique(resid), resid), dtype=torch.int64)
+        chain = g["chain"][:]
+        a2r = torch.tensor(residue_order(resid, chain)[2], dtype=torch.int64)
         temp = sorted(k for k in g.keys() if k.isdigit())[0]
         x = torch.tensor(g[temp][replica]["coords"][0], dtype=torch.float64)
         fo = torch.tensor(g[temp][replica]["forces"][0], dtype=torch.float64)

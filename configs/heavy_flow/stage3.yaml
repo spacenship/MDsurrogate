@@ -1,0 +1,67 @@
+architecture_version: heavy_flow_v2_geometry_context_pair_messages
+history:
+  length: 3  # includes the current frame
+  stride_frames: 1  # raw stored frames; independent of prediction lag
+  missing_policy: repeat_earliest  # repeat frame 0 only; quarantined frames exclude the sample
+# Stage 3: direct sequence/current-history geometry -> atom/pair physics.
+# No feasibility_v2 teacher/oracle latent or teacher-student path is allowed.
+stage: stage3_atom_physics
+sequence_encoder:
+  family: ESMC-300M
+  backend: esmc
+  model_name: models/ESMC-300M
+  revision: local-ESMC-300M
+  projected_dim: 64
+  cache_only: true
+  cache_dir: outputs/heavy_flow/esmc_cache
+geometry:
+  num_blocks: 4
+  lmax: 2
+  hidden_irreps: "96x0e + 24x1o + 8x1e + 8x2e"
+  edge_chunk_size: 2048
+  activation_checkpoint: true
+graph:
+  spatial_cutoff_angstrom: 6.0
+  max_spatial_neighbors: 32
+  include_covalent_edges: true
+  include_chain_adjacent_edges: false
+context:
+  joint_scalar_dim: 384
+  fusion_blocks: 4
+  attention_heads: 8
+  pair_bias: true
+  dropout: 0.1
+  geometry_modality_dropout: 0.1
+  atom_refine_blocks: 2
+  atom_refine_lmax: 2
+  atom_refine_radial_basis: 16
+  atom_refine_edge_embedding_dim: 8
+  atom_refine_edge_chunk_size: 2048
+  atom_refine_activation_checkpoint: true
+physics:
+  physics_blocks: 3
+  lmax: 2
+  scalar_dim: 64
+  vector_channels: 8
+  axial_channels: 4
+  pair_dim: 32
+  radial_basis: 16
+  edge_embedding_dim: 8
+  spatial_cutoff_angstrom: 6.0
+  predict_force_mean: true
+  predict_isotropic_force_variance: true
+  use_pair_latent: true
+  edge_chunk_size: 2048
+  activation_checkpoint: true
+force_head:
+  logvar_min: -10.0
+  logvar_max: 10.0
+loss:
+  epsilon: 1.0e-6
+  include_constant: false
+data:
+  represented_scope: heavy_atom
+  same_domain_validation_fraction: 0.2
+  unseen_domain_validation_fraction: 0.2
+  temporal_block_size: 16
+  seed: 0

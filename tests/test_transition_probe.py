@@ -82,7 +82,7 @@ def extractor(tmp_path_factory):
          "latent_contract": model.latent_contract()},
         path,
     )
-    return FrozenPhase1Extractor.from_checkpoint(path)
+    return FrozenPhase1Extractor.from_checkpoint(path, extract_pair_features=True)
 
 
 def probe_config(**overrides) -> TransitionProbeConfig:
@@ -98,8 +98,12 @@ def probe_config(**overrides) -> TransitionProbeConfig:
 
 def make_probe(extractor, **overrides) -> TransitionProbe:
     torch.manual_seed(0)
+    arm = overrides.get("arm", "structure_only")
+    overrides.setdefault("future_physics", arm == "pair_physics_future")
     return TransitionProbe(
-        probe_config(**overrides), latent_irreps=extractor.contract["physics_latent_irreps"]
+        probe_config(**overrides),
+        latent_irreps=extractor.contract["physics_latent_irreps"],
+        message_irreps=extractor.metadata["pair_contract"]["pair_message_irreps"],
     )
 
 

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380">
+<rect width="760" height="380" fill="#ffffff"/>
+<line x1="70.0" y1="290.0" x2="740.0" y2="290.0" stroke="#888" stroke-width="1.0"/>
+<line x1="70.0" y1="60.0" x2="70.0" y2="290.0" stroke="#888" stroke-width="1.0"/>
+<line x1="70.0" y1="290.0" x2="740.0" y2="290.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="294.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">2.94</text>
+<line x1="70.0" y1="244.0" x2="740.0" y2="244.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="248.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">2.98</text>
+<line x1="70.0" y1="198.0" x2="740.0" y2="198.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="202.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">3.02</text>
+<line x1="70.0" y1="152.0" x2="740.0" y2="152.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="156.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">3.05</text>
+<line x1="70.0" y1="106.0" x2="740.0" y2="106.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="110.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">3.09</text>
+<line x1="70.0" y1="60.0" x2="740.0" y2="60.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="64.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">3.13</text>
+<text x="70.0" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,70.0,304)">500</text>
+<text x="740.0" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,740.0,304)">6000</text>
+<text x="405.0" y="54.0" font-size="13" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="middle">Validation loss</text>
+<text x="16.0" y="175.0" font-size="11" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="middle" transform="rotate(-90,16,175.0)">loss</text>
+<polyline points="70.0,101.2 130.9,167.4 191.8,196.9 252.7,208.3 313.6,212.8 374.5,211.1 435.5,228.1 496.4,230.1 557.3,232.6 618.2,235.3 679.1,235.3 740.0,232.4" fill="none" stroke="#0072b2" stroke-width="1.8"/>
+<polyline points="70.0,82.3 130.9,147.8 191.8,186.9 252.7,208.4 313.6,210.2 374.5,226.2 435.5,236.3 496.4,237.9 557.3,245.6 618.2,249.7 679.1,246.7 740.0,247.9" fill="none" stroke="#d55e00" stroke-width="1.8"/>
+<polyline points="70.0,98.6 130.9,169.1 191.8,207.2 252.7,222.3 313.6,230.5 374.5,234.6 435.5,254.4 496.4,255.6 557.3,259.8 618.2,267.7 679.1,266.1 740.0,265.8" fill="none" stroke="#009e73" stroke-width="1.8"/>
+<polyline points="70.0,119.8 130.9,169.1 191.8,205.0 252.7,208.4 313.6,216.7 374.5,219.7 435.5,241.0 496.4,232.0 557.3,245.6 618.2,248.4 679.1,245.9 740.0,245.3" fill="none" stroke="#cc79a7" stroke-width="1.8"/>
+<polyline points="70.0,112.5 130.9,155.3 191.8,183.5 252.7,201.4 313.6,217.7 374.5,215.7 435.5,227.7 496.4,230.2 557.3,237.8 618.2,237.8 679.1,239.8 740.0,240.1" fill="none" stroke="#56b4e9" stroke-width="1.8"/>
+<polyline points="70.0,86.1 130.9,152.6 191.8,186.7 252.7,198.9 313.6,210.6 374.5,217.0 435.5,224.0 496.4,221.0 557.3,227.2 618.2,232.0 679.1,232.4 740.0,229.4" fill="none" stroke="#e69f00" stroke-width="1.8"/>
+<polyline points="70.0,99.8 130.9,156.3 191.8,191.9 252.7,200.0 313.6,212.4 374.5,214.6 435.5,226.1 496.4,224.6 557.3,231.6 618.2,237.5 679.1,235.9 740.0,233.6" fill="none" stroke="#7f7f7f" stroke-width="1.8"/>
+<line x1="620.0" y1="64.0" x2="640.0" y2="64.0" stroke="#0072b2" stroke-width="3"/>
+<text x="644.0" y="68.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">O</text>
+<line x1="620.0" y1="78.0" x2="640.0" y2="78.0" stroke="#d55e00" stroke-width="3"/>
+<text x="644.0" y="82.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">P0</text>
+<line x1="620.0" y1="92.0" x2="640.0" y2="92.0" stroke="#009e73" stroke-width="3"/>
+<text x="644.0" y="96.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">P1</text>
+<line x1="620.0" y1="106.0" x2="640.0" y2="106.0" stroke="#cc79a7" stroke-width="3"/>
+<text x="644.0" y="110.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">P2</text>
+<line x1="620.0" y1="120.0" x2="640.0" y2="120.0" stroke="#56b4e9" stroke-width="3"/>
+<text x="644.0" y="124.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">S0</text>
+<line x1="620.0" y1="134.0" x2="640.0" y2="134.0" stroke="#e69f00" stroke-width="3"/>
+<text x="644.0" y="138.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">S1</text>
+<line x1="620.0" y1="148.0" x2="640.0" y2="148.0" stroke="#7f7f7f" stroke-width="3"/>
+<text x="644.0" y="152.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">S2</text>
+</svg>

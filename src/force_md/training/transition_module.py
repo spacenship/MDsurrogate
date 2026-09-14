@@ -52,6 +52,12 @@ from ..transition.metrics import (
     aggregate_metric_records,
     metric_records,
 )
+from ..transition.arms import canonical_name
+from ..transition.future_physics import (
+    future_physics_loss,
+    future_physics_target,
+    future_state_batch,
+)
 from ..transition.phase1_features import FrozenPhase1Extractor
 from ..transition.probe import TransitionProbe, TransitionProbeConfig
 from ..transition.targets import build_transition_target, identity_prediction
@@ -85,6 +91,12 @@ class TransitionTrainConfig:
             value, which the finiteness check alone did not catch.
         seed: seeds python/numpy/torch **and** the sampler, so the batch order is
             part of what the seed fixes.
+        future_physics_weight: ``lambda_future-phys``. **Zero for every arm except
+            P4**, so the primary objective is bit-for-bit the same one Phase 1.5
+            optimised and an arm that does not use the term does not pay for it.
+            A non-zero weight on a probe with no auxiliary head is an error, not a
+            no-op: it means the config and the arm disagree.
+        future_physics_huber_delta: transition to linear in the auxiliary Huber.
     """
 
     seed: int = 0
@@ -104,6 +116,8 @@ class TransitionTrainConfig:
     device: str = "cuda:0" if torch.cuda.is_available() else "cpu"
     loss_weights: TransitionLossWeights = field(default_factory=TransitionLossWeights)
     metrics: MetricConfig = field(default_factory=MetricConfig)
+    future_physics_weight: float = 0.0
+    future_physics_huber_delta: float = 1.0
 
 
 class TransitionTrainer:
@@ -150,6 +164,25 @@ class TransitionTrainer:
         self.history: list[dict] = []
         self.skipped_steps = 0
         self.consecutive_skips = 0
+        self.wall_time_s = 0.0
+
+        # A weight with no head, or a head with no weight, means the config and
+        # the arm disagree about which experiment this is. Both are silent at
+        # runtime -- the loss simply does not include a term someone believes is
+        # there -- so both are refused here.
+        has_head = getattr(self.module, "future_physics_head", None) is not None
+        if config.future_physics_weight > 0 and not has_head:
+            raise ValueError(
+                f"future_physics_weight={config.future_physics_weight} but arm "
+                f"{self.arm!r} has no auxiliary head. Set "
+                "TransitionProbeConfig.future_physics=True, or set the weight to 0."
+            )
+        if has_head and config.future_physics_weight <= 0:
+            raise ValueError(
+                f"arm {self.arm!r} carries a future-physics head but "
+                "future_physics_weight is 0, so the head would train no gradient "
+                "and the arm would silently be a copy of P2"
+            )
 
     # -- bookkeeping -------------------------------------------------------
 
@@ -174,8 +207,25 @@ class TransitionTrainer:
     def provenance(self) -> dict:
         """Everything needed to say two runs were the same experiment."""
         breakdown = self.module.parameter_breakdown()
+        conditioner = self.module.conditioner
         return {
             "arm": self.arm,
+            "canonical_arm": canonical_name(self.arm),
+            # An oracle checkpoint is not a model, it is a measuring instrument.
+            # Recording that inside the artefact means a later reader cannot mistake
+            # one for a deployable result by looking only at the numbers.
+            "oracle": bool(conditioner.requires_oracle),
+            "uses_pair_features": bool(conditioner.requires_pair_features),
+            "future_physics": getattr(self.module, "future_physics_head", None)
+            is not None,
+            "pair_contract": self.extractor.metadata.get("pair_contract"),
+            "git": _git_state(),
+            "resources": {
+                "peak_gpu_memory_bytes": self._peak_memory(),
+                "train_wall_time_s": round(self.wall_time_s, 3),
+                "device": self.config.device,
+                "world_size": self._world_size(),
+            },
             "seed": self.config.seed,
             "parameter_count": breakdown["total"],
             "trainable_parameter_count": self.module.trainable_parameter_count(),
@@ -199,6 +249,18 @@ class TransitionTrainer:
                 "irreps": str(self.module.irreps),
             },
         }
+
+    def _peak_memory(self) -> Optional[int]:
+        if self.device.type != "cuda":
+            return None
+        return int(torch.cuda.max_memory_allocated(self.device))
+
+    def _world_size(self) -> int:
+        if not self.distributed:
+            return 1
+        import torch.distributed as dist  # noqa: PLC0415
+
+        return dist.get_world_size()
 
     # -- learning rate -----------------------------------------------------
 
@@ -243,7 +305,37 @@ class TransitionTrainer:
         total, components = transition_loss(
             prediction, target, weights=self.config.loss_weights
         )
+        if prediction.future_physics_latent is not None:
+            auxiliary, diagnostics = self._future_physics(batch, prediction, bundle)
+            total = total + self.config.future_physics_weight * auxiliary
+            components.update(diagnostics)
+            # `total` is on the graph here; detach before the float or every step
+            # logs a UserWarning about scalarising a tensor that requires grad.
+            components["total"] = float(total.detach())
         return total, components, prediction, target, batch
+
+    def _future_physics(self, batch: LagPairBatch, prediction, bundle):
+        """The ``P4`` auxiliary term.
+
+        The future structure is read **here**, in the trainer, exactly like the
+        transition target and for the same reason: this is the only place in the
+        codebase that is allowed to look at ``t + lag``. The latent it produces is
+        detached at creation and reaches the model only as a comparison.
+        """
+        head = self.module.future_physics_head
+        production = bundle.production if hasattr(bundle, "production") else bundle
+        future_latent = self.extractor.node_latent(
+            future_state_batch(batch.current, batch.future)
+        )
+        target = future_physics_target(
+            future_latent, production.frames.rotation, head
+        )
+        return future_physics_loss(
+            prediction.future_physics_latent,
+            target,
+            production.residue_valid,
+            delta=self.config.future_physics_huber_delta,
+        )
 
     def train_step(self, batch: LagPairBatch) -> dict:
         self.model.train()
@@ -332,6 +424,8 @@ class TransitionTrainer:
                     target,
                     domains=[p.domain for p in moved.pairs],
                     lag_ps=[p.lag_ps for p in moved.pairs],
+                    temperatures=[p.temperature for p in moved.pairs],
+                    pair_ids=[p.pair_id for p in moved.pairs],
                     split=split,
                     config=self.config.metrics,
                 )
@@ -358,6 +452,11 @@ class TransitionTrainer:
         checkpoint_path: Optional[str] = None,
     ) -> list[dict]:
         start = time.time()
+        if self.device.type == "cuda":
+            # Reset so the recorded peak is this run's, not a leftover high-water
+            # mark from whatever the process did before (building the extractor,
+            # a previous arm in the same runner process).
+            torch.cuda.reset_peak_memory_stats(self.device)
         if log is print:
             # Redirected stdout is block-buffered, so a bare print makes a long
             # run look hung for tens of minutes at a time -- a 40k-step run
@@ -409,6 +508,7 @@ class TransitionTrainer:
                     self.save_checkpoint(checkpoint_path)
                 self._barrier()
 
+        self.wall_time_s = time.time() - start
         if checkpoint_path and self.is_main:
             self.save_checkpoint(checkpoint_path)
         self._barrier()
@@ -443,6 +543,13 @@ class TransitionTrainer:
                 "probe_config": self.module.config,
                 "train_config": self.config,
                 "latent_irreps": self.extractor.contract["physics_latent_irreps"],
+                "message_irreps": (
+                    self.extractor.metadata.get("pair_contract") or {}
+                ).get("pair_message_irreps"),
+                # Top level, not only inside provenance: whoever picks this file up
+                # should not have to know where to look to find out that its
+                # conditioner read a label.
+                "oracle": bool(self.module.conditioner.requires_oracle),
                 "step": self.step,
                 "history": self.history,
                 "skipped_steps": self.skipped_steps,
@@ -451,6 +558,33 @@ class TransitionTrainer:
             tmp,
         )
         os.replace(tmp, path)
+
+    @staticmethod
+    def export_production_checkpoint(source: str, destination: str) -> str:
+        """Copy a trained arm out as a deployable model, refusing an oracle.
+
+        The oracle arm is an upper-bound instrument: it reads ground-truth forces
+        at inference, so as a *model* it does not exist. Nothing stops someone
+        copying the file by hand -- what this stops is the project growing a
+        supported path that turns a diagnostic into a deliverable.
+
+        Raises:
+            ValueError: if the source checkpoint's conditioner reads a label.
+        """
+        payload = torch.load(source, map_location="cpu", weights_only=False)
+        oracle = payload.get("oracle")
+        if oracle is None:
+            oracle = bool(payload.get("provenance", {}).get("oracle", False))
+        if oracle:
+            raise ValueError(
+                f"{source} is an oracle checkpoint: its conditioner reads "
+                "ground-truth forces at t, which are not available at inference. "
+                "It bounds what a model could do; it is not one. Refusing to "
+                "export it as a production checkpoint."
+            )
+        os.makedirs(os.path.dirname(os.path.abspath(destination)) or ".", exist_ok=True)
+        torch.save(payload, destination)
+        return destination
 
     def load_state(self, path: str) -> None:
         payload = torch.load(path, map_location=self.device, weights_only=False)
@@ -467,7 +601,9 @@ class TransitionTrainer:
         """Rebuild probe and trainer exactly as saved."""
         payload = torch.load(path, map_location=device, weights_only=False)
         probe = TransitionProbe(
-            payload["probe_config"], latent_irreps=payload["latent_irreps"]
+            payload["probe_config"],
+            latent_irreps=payload["latent_irreps"],
+            message_irreps=payload.get("message_irreps"),
         )
         probe.load_state_dict(payload["state_dict"])
         config = dataclasses.replace(payload["train_config"], device=device)
@@ -476,6 +612,36 @@ class TransitionTrainer:
         trainer.step = payload["step"]
         trainer.history = payload["history"]
         return probe, trainer
+
+
+def _git_state() -> dict:
+    """Commit and dirtiness of the working tree that produced a result.
+
+    Best-effort: a result produced outside a git checkout is still a result, and
+    ``None`` says "unknown" rather than pretending. ``dirty`` matters more than
+    the commit -- a clean tree at a known commit is reproducible, a dirty one is
+    an observation about code nobody else has.
+    """
+    import subprocess  # noqa: PLC0415
+
+    root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__)
+    ))))
+    def run(*args):
+        try:
+            return subprocess.run(
+                args, cwd=root, capture_output=True, text=True, timeout=10, check=True
+            ).stdout.strip()
+        except Exception:  # noqa: BLE001 - provenance must never break a run
+            return None
+
+    commit = run("git", "rev-parse", "HEAD")
+    status = run("git", "status", "--porcelain")
+    return {
+        "commit": commit,
+        "dirty": None if status is None else bool(status),
+        "dirty_files": None if not status else status.splitlines()[:20],
+    }
 
 
 def _flatten(summary: dict) -> dict:

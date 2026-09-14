@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="380" viewBox="0 0 760 380">
+<rect width="760" height="380" fill="#ffffff"/>
+<line x1="70.0" y1="290.0" x2="740.0" y2="290.0" stroke="#888" stroke-width="1.0"/>
+<line x1="70.0" y1="60.0" x2="70.0" y2="290.0" stroke="#888" stroke-width="1.0"/>
+<line x1="70.0" y1="290.0" x2="740.0" y2="290.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="294.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">-0.0108</text>
+<line x1="70.0" y1="244.0" x2="740.0" y2="244.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="248.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">-0.00455</text>
+<line x1="70.0" y1="198.0" x2="740.0" y2="198.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="202.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">0.00171</text>
+<line x1="70.0" y1="152.0" x2="740.0" y2="152.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="156.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">0.00797</text>
+<line x1="70.0" y1="106.0" x2="740.0" y2="106.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="110.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">0.0142</text>
+<line x1="70.0" y1="60.0" x2="740.0" y2="60.0" stroke="#eeeeee" stroke-width="1.0"/>
+<text x="62.0" y="64.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end">0.0205</text>
+<text x="116.2" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,116.20689655172413,304)">S1</text>
+<text x="231.7" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,231.72413793103445,304)">S2</text>
+<text x="347.2" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,347.24137931034477,304)">O</text>
+<text x="462.8" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,462.7586206896551,304)">P0</text>
+<text x="578.3" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,578.2758620689655,304)">P1</text>
+<text x="693.8" y="304.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="end" transform="rotate(-35,693.7931034482758,304)">P2</text>
+<text x="405.0" y="54.0" font-size="13" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="middle">Oracle gap — Cα RMSD improvement over S0 (positive is better)</text>
+<text x="16.0" y="175.0" font-size="11" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="middle" transform="rotate(-90,16,175.0)">Δ Cα RMSD (Å)</text>
+<line x1="70.0" y1="210.6" x2="740.0" y2="210.6" stroke="#999" stroke-width="1.0" stroke-dasharray="4,4"/>
+<polyline points="116.2,214.5 231.7,217.9 347.2,226.6 462.8,88.5 578.3,167.7 693.8,183.0" fill="none" stroke="#0072b2" stroke-width="1.8"/>
+<circle cx="116.2" cy="214.5" r="4" fill="#0072b2"/>
+<circle cx="231.7" cy="217.9" r="4" fill="#0072b2"/>
+<circle cx="347.2" cy="226.6" r="4" fill="#0072b2"/>
+<circle cx="462.8" cy="88.5" r="4" fill="#0072b2"/>
+<circle cx="578.3" cy="167.7" r="4" fill="#0072b2"/>
+<circle cx="693.8" cy="183.0" r="4" fill="#0072b2"/>
+<polyline points="116.2,254.6 231.7,267.7 347.2,267.3 462.8,82.3 578.3,153.8 693.8,98.2" fill="none" stroke="#d55e00" stroke-width="1.8"/>
+<circle cx="116.2" cy="254.6" r="4" fill="#d55e00"/>
+<circle cx="231.7" cy="267.7" r="4" fill="#d55e00"/>
+<circle cx="347.2" cy="267.3" r="4" fill="#d55e00"/>
+<circle cx="462.8" cy="82.3" r="4" fill="#d55e00"/>
+<circle cx="578.3" cy="153.8" r="4" fill="#d55e00"/>
+<circle cx="693.8" cy="98.2" r="4" fill="#d55e00"/>
+<line x1="620.0" y1="64.0" x2="640.0" y2="64.0" stroke="#0072b2" stroke-width="3"/>
+<text x="644.0" y="68.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">1 ns</text>
+<line x1="620.0" y1="78.0" x2="640.0" y2="78.0" stroke="#d55e00" stroke-width="3"/>
+<text x="644.0" y="82.0" font-size="10" fill="#222" font-family="ui-sans-serif,system-ui,sans-serif" text-anchor="start">4 ns</text>
+</svg>

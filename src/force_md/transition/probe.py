@@ -41,6 +41,7 @@ at 180 degrees to matter.
 
 from __future__ import annotations
 
+import dataclasses
 from dataclasses import dataclass, field
 from typing import Optional, Sequence
 
@@ -63,6 +64,8 @@ from ..graph.edges import (
 from ..nn.blocks import BackboneInteractionBlock
 from ..nn.irreps import IrrepsConfig
 from .conditioners import ConditionerConfig, TransitionConditioner, build_conditioner
+from .future_physics import FuturePhysicsHead
+from .pair_physics import ConditionerContext
 from .phase1_features import FeatureBundle, OracleFeatureBundle
 from .targets import TransitionPrediction
 
@@ -176,6 +179,9 @@ class TransitionProbeConfig:
             semantics Phase 1's backbone level uses, reused rather than redefined.
         use_plm / use_temperature: conditioning ablation hooks, shared by all arms.
         predict_translation / predict_rotation: for diagnostics; both on by default.
+        future_physics: attach the ``P4`` auxiliary head predicting Phase 1's
+            latent at ``t + lag``. Defaulted off, so every Phase 1.5 ``probe_config``
+            in an existing checkpoint still builds the model it described.
     """
 
     arm: str = "structure_only"
@@ -198,6 +204,7 @@ class TransitionProbeConfig:
     use_plm: bool = True
     use_temperature: bool = True
     use_body_order_3: bool = True
+    future_physics: bool = False
 
     @property
     def past_frames(self) -> int:
@@ -213,14 +220,25 @@ class TransitionProbe(nn.Module):
             checkpoint's contract. Never hard-coded: Phase 1.5 must not assume 152.
     """
 
-    def __init__(self, config: TransitionProbeConfig, *, latent_irreps: str):
+    def __init__(
+        self,
+        config: TransitionProbeConfig,
+        *,
+        latent_irreps: str,
+        message_irreps: Optional[str] = None,
+    ):
         super().__init__()
         self.config = config
         self.irreps = config.irreps.node_irreps()
         self.irreps_sh = config.irreps.sh_irreps()
+        self.latent_irreps = str(latent_irreps)
 
         self.conditioner: TransitionConditioner = build_conditioner(
-            config.arm, config.conditioner, irreps=latent_irreps
+            config.arm,
+            config.conditioner,
+            irreps=latent_irreps,
+            message_irreps=message_irreps,
+            cutoff=config.backbone_cutoff,
         )
         self.residue_conditioner = ResidueConditioner(
             plm_dim=config.plm_dim,
@@ -265,6 +283,15 @@ class TransitionProbe(nn.Module):
             for parameter in head.parameters():
                 nn.init.zeros_(parameter)
 
+        # P4 only. An auxiliary *output* head: it reads the probe's own hidden
+        # state and never touches an input, so no future quantity can reach the
+        # conditioning path through it.
+        self.future_physics_head = (
+            FuturePhysicsHead(str(self.irreps), self.latent_irreps)
+            if config.future_physics
+            else None
+        )
+
     # -- parameter accounting ---------------------------------------------
 
     def parameter_count(self) -> int:
@@ -286,6 +313,10 @@ class TransitionProbe(nn.Module):
                 p.numel()
                 for head in (self.translation_head, self.rotation_head)
                 for p in head.parameters()
+            ),
+            "future_physics_head": (
+                0 if self.future_physics_head is None
+                else sum(p.numel() for p in self.future_physics_head.parameters())
             ),
             "total": self.parameter_count(),
         }
@@ -342,7 +373,13 @@ class TransitionProbe(nn.Module):
         for block in self.blocks:
             node = block(node, edges, edge_sh, distance)
 
-        return self._heads(node, frames)
+        prediction = self._heads(node, frames)
+        if self.future_physics_head is not None:
+            prediction = dataclasses.replace(
+                prediction,
+                future_physics_latent=self.future_physics_head(node, frames.rotation),
+            )
+        return prediction
 
     def _inputs(
         self,
@@ -353,7 +390,23 @@ class TransitionProbe(nn.Module):
         frames: ResidueFrames,
     ) -> tuple[Tensor, list[Tensor]]:
         """Invariant scalars and equivariant seed vectors for every residue."""
-        parts = [self.residue_conditioner(batch), self.conditioner(bundle)]
+        # Arms that gate on temperature and lag are handed them; the five
+        # Phase 1.5 arms keep the exact call they were trained with, so nothing
+        # about their behaviour depends on this branch existing.
+        if self.conditioner.wants_context:
+            index = batch.residues.batch_index
+            conditioning = self.conditioner(
+                bundle,
+                context=ConditionerContext(
+                    temperature_kelvin=batch.temperature.reshape(-1)[index],
+                    lag_ps=lag_ps.reshape(-1).to(
+                        batch.backbone.ca_positions.dtype
+                    )[index],
+                ),
+            )
+        else:
+            conditioning = self.conditioner(bundle)
+        parts = [self.residue_conditioner(batch), conditioning]
 
         lag = lag_features(lag_ps.to(batch.backbone.ca_positions.dtype))
         parts.append(lag[batch.residues.batch_index])

@@ -12,6 +12,7 @@ or hard-links against MDensemble's copy of mdCATH.
 Usage:
     python scripts/download_mdcath.py --num-domains 1000
     python scripts/download_mdcath.py --num-domains 1000 --dry-run
+    python scripts/download_mdcath.py --chunk-index 0 --chunk-size 500
 """
 
 from __future__ import annotations
@@ -68,6 +69,20 @@ def select_subset(
     return [shards[i] for i in order[:num_domains]]
 
 
+def select_chunk(
+    shards: list[tuple[str, int]], chunk_index: int, chunk_size: int, seed: int
+) -> list[tuple[str, int]]:
+    """Select one exact chunk from the same seeded global order as ``select_subset``."""
+    if chunk_index < 0:
+        raise ValueError("chunk_index must be non-negative")
+    if chunk_size < 1:
+        raise ValueError("chunk_size must be positive")
+    order = list(range(len(shards)))
+    random.Random(seed).shuffle(order)
+    start = chunk_index * chunk_size
+    return [shards[i] for i in order[start : start + chunk_size]]
+
+
 def download_one(repo_id: str, path_in_repo: str, size: int, out_dir: Path) -> tuple[str, str, int]:
     """Returns (basename, status, bytes_downloaded). Skips already-complete files."""
     name = os.path.basename(path_in_repo)
@@ -94,7 +109,13 @@ def download_one(repo_id: str, path_in_repo: str, size: int, out_dir: Path) -> t
     return name, "ok", got
 
 
-def run_audits(data_dir: str, root: Path) -> int:
+def run_audits(
+    data_dir: str,
+    root: Path,
+    *,
+    manifest: Path,
+    output_dir: Path,
+) -> int:
     """Regenerate both quarantine files over the freshly downloaded shards.
 
     This runs as part of downloading, not as a step someone is told about in a
@@ -110,28 +131,40 @@ def run_audits(data_dir: str, root: Path) -> int:
     """
     import subprocess  # noqa: PLC0415
 
+    output_dir.mkdir(parents=True, exist_ok=True)
     for script, out in (("audit_mdcath_forces.py", "mdcath_force_quarantine.json"),
                         ("audit_mdcath_coords.py", "mdcath_coord_quarantine.json")):
         log(f"\n=== {script} ===")
+        output_path = output_dir / out
+        command = [sys.executable, str(root / "scripts" / script),
+                   "--data-dir", data_dir, "--out", str(output_path)]
+        if script == "audit_mdcath_forces.py":
+            command += ["--manifest", str(manifest)]
         result = subprocess.run(
-            [sys.executable, str(root / "scripts" / script),
-             "--data-dir", data_dir, "--out", str(root / out)],
+            command,
             check=False,
         )
         if result.returncode != 0:
             log(f"AUDIT FAILED: {script} exited {result.returncode}. Training will "
-                f"refuse to start until {out} exists.")
+                f"refuse to start until {output_path} exists.")
             return result.returncode
-    log("\nquarantine files regenerated; the data is ready for training")
+    log(f"\nquarantine files regenerated in {output_dir}; the data is ready for training")
     return 0
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--repo-id", default=DEFAULT_REPO_ID)
-    ap.add_argument("--num-domains", type=int, default=1000)
+    ap.add_argument("--num-domains", type=int, default=1000,
+                    help="Prefix size when --chunk-index is not used")
     ap.add_argument("--seed", type=int, default=0)
-    ap.add_argument("--out-dir", default=str(Path(__file__).resolve().parents[1] / "data"))
+    ap.add_argument("--chunk-index", type=int, default=None,
+                    help="Download exactly this 0-based chunk from the seeded order")
+    ap.add_argument("--chunk-size", type=int, default=500)
+    ap.add_argument("--out-dir", default=None,
+                    help="Defaults to data/ for prefix mode, or data/chunks/chunk_NNN for chunk mode")
+    ap.add_argument("--manifest", default=None,
+                    help="Manifest output path; chunk mode defaults to inside the chunk directory")
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--min-free-gb", type=float, default=200.0,
                     help="Abort before starting a new file if free space drops below this.")
@@ -142,30 +175,54 @@ def main() -> int:
                          "audited afterwards.")
     args = ap.parse_args()
 
-    out_dir = Path(args.out_dir)
+    root = Path(__file__).resolve().parents[1]
+    if args.chunk_index is not None:
+        if args.chunk_index < 0 or args.chunk_size < 1:
+            log("ERROR: chunk-index must be non-negative and chunk-size positive")
+            return 2
+        out_dir = Path(args.out_dir) if args.out_dir else root / "data" / "chunks" / f"chunk_{args.chunk_index:03d}"
+    else:
+        out_dir = Path(args.out_dir) if args.out_dir else root / "data"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     log(f"listing shards in {args.repo_id} ...")
     shards = list_shards(args.repo_id)
     log(f"repo has {len(shards)} shards, {sum(s for _, s in shards) / 1e12:.2f} TB")
 
-    if args.num_domains > len(shards):
-        log(f"ERROR: requested {args.num_domains} > available {len(shards)}")
-        return 2
-
-    subset = select_subset(shards, args.num_domains, args.seed)
+    if args.chunk_index is None:
+        if args.num_domains > len(shards):
+            log(f"ERROR: requested {args.num_domains} > available {len(shards)}")
+            return 2
+        subset = select_subset(shards, args.num_domains, args.seed)
+        selection = {"mode": "prefix", "num_domains": args.num_domains}
+    else:
+        subset = select_chunk(shards, args.chunk_index, args.chunk_size, args.seed)
+        if not subset:
+            log(f"ERROR: chunk {args.chunk_index} is empty; repository has only "
+                f"{len(shards)} shards")
+            return 2
+        selection = {
+            "mode": "chunk",
+            "chunk_index": args.chunk_index,
+            "chunk_size": args.chunk_size,
+            "num_domains": len(subset),
+        }
     total = sum(s for _, s in subset)
     have = sum(
         (out_dir / os.path.basename(p)).stat().st_size
         for p, s in subset
         if (out_dir / os.path.basename(p)).exists()
     )
-    log(f"selected {len(subset)} domains (seed={args.seed}): {total / 1e9:.0f} GB total, "
+    log(f"selected {len(subset)} domains (seed={args.seed}, {selection['mode']}): {total / 1e9:.0f} GB total, "
         f"{have / 1e9:.0f} GB already present, {(total - have) / 1e9:.0f} GB to fetch")
 
-    manifest = out_dir.parent / "mdcath_manifest.json"
+    manifest = Path(args.manifest) if args.manifest else (
+        out_dir / "mdcath_manifest.json" if args.chunk_index is not None
+        else out_dir.parent / "mdcath_manifest.json"
+    )
+    manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text(json.dumps(
-        {"repo_id": args.repo_id, "seed": args.seed, "num_domains": args.num_domains,
+        {"repo_id": args.repo_id, "seed": args.seed, **selection,
          "shards": [{"path": p, "size": s} for p, s in subset]}, indent=1))
     log(f"manifest written -> {manifest}")
 
@@ -218,7 +275,13 @@ def main() -> int:
             "scripts/audit_mdcath_forces.py and scripts/audit_mdcath_coords.py "
             "before training on this data.")
         return 0
-    return run_audits(str(out_dir), Path(__file__).resolve().parents[1])
+    # Preserve the established root-level quarantine paths for the cumulative
+    # prefix mode. Isolated chunk downloads keep their audit beside the chunk,
+    # so a chunk can be inspected without overwriting the cumulative audit.
+    audit_dir = out_dir if args.chunk_index is not None else root
+    return run_audits(
+        str(out_dir), root, manifest=manifest, output_dir=audit_dir
+    )
 
 
 if __name__ == "__main__":

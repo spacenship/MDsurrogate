@@ -31,6 +31,7 @@ __all__ = [
     "dihedral_angle",
     "sequence_neighbours",
     "backbone_torsions",
+    "backbone_omega",
     "wrap_to_pi",
 ]
 
@@ -150,3 +151,48 @@ def backbone_torsions(
         phi_valid,
         psi_valid,
     )
+
+
+def backbone_omega(
+    n_positions: Tensor,
+    ca_positions: Tensor,
+    c_positions: Tensor,
+    following: Tensor,
+    *,
+    valid: Optional[Tensor] = None,
+) -> tuple[Tensor, Tensor]:
+    """``omega_i = dihedral(CA_i, C_i, N_{i+1}, CA_{i+1})``, in radians.
+
+    The peptide-bond torsion, added for the Phase 1.6 extended evaluation. It is
+    the one backbone torsion that is nearly a constant of chemistry -- trans is
+    ~180 deg and cis ~0 deg, and nothing else is populated -- so it is the
+    sharpest of the three at telling a reconstructed chain that is merely
+    inaccurate from one that is not a peptide at all.
+
+    Kept beside :func:`backbone_torsions` rather than folded into it because that
+    function's four-tuple return is part of the Phase 1.5 metric path and its
+    callers are pinned by test.
+
+    Args:
+        n_positions / ca_positions / c_positions: ``[N_res, 3]``.
+        following: from :func:`sequence_neighbours`; ``-1`` where there is no
+            next residue in the same chain with contiguous numbering.
+        valid: optional ``[N_res]`` bool; a residue with a degenerate or missing
+            backbone invalidates the omega that leaves it and the one that
+            arrives at it.
+
+    Returns:
+        ``(omega, omega_valid)``. Angles at invalid positions are 0 and must be
+        masked, not read.
+    """
+    n_res = ca_positions.shape[0]
+    if valid is None:
+        valid = torch.ones(n_res, dtype=torch.bool, device=ca_positions.device)
+    has_next = following >= 0
+    next_safe = following.clamp(min=0)
+    omega = dihedral_angle(
+        ca_positions, c_positions, n_positions[next_safe], ca_positions[next_safe]
+    )
+    omega_valid = has_next & valid & valid[next_safe]
+    zero = torch.zeros((), dtype=omega.dtype, device=omega.device)
+    return torch.where(omega_valid, omega, zero), omega_valid

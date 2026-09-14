@@ -186,6 +186,8 @@ class Esm2EmbeddingCache:
             raise FileNotFoundError(f"no cached embedding for {domain_id} at {path}")
         payload = torch.load(path, map_location="cpu", weights_only=False)
         meta = payload["metadata"]
+        if expect_sequence is not None and meta.get("sequence") != expect_sequence:
+            raise ValueError(f"{domain_id}: cached embedding sequence/order mismatch; regenerate cache")
         if expect_sequence is not None and config is not None:
             want = sequence_fingerprint(expect_sequence, config)
             if meta.get("fingerprint") != want:

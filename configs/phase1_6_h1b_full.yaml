@@ -1,0 +1,164 @@
+# Phase 1.6 H0 -- heavy-atom backmapping of the Stage B checkpoints.
+#
+#   python scripts/evaluate_phase1_6_h0.py --run runs/phase1_6_bounded_seed0 \
+#       --config configs/phase1_6_h0.yaml --out runs/phase1_6_h0_seed0
+#
+# Data, split, manifest and model blocks are byte-identical to
+# configs/phase1_6_bounded.yaml, because H0 must load the same validation pairs
+# the checkpoints were trained against -- the runner asserts the manifest hash
+# matches and aborts otherwise. Only the `h0:` block below is new; nothing here
+# trains anything.
+#
+# Every value shared with configs/phase1_5_short.yaml is the **same** value:
+# the point of Phase 1.6 is the new arms, so a difference between a Phase 1.5 and
+# a Phase 1.6 number must not be traceable to a budget or a manifest.
+#
+# Bounded results are a direction, not a claim: one seed cannot separate arms
+# whose Phase 1.5 siblings differed by 0.2%. What it decides is whether P1/P2
+# move consistently against P0 -- the Stage C gate.
+
+phase1:
+  checkpoint: runs/phase1_full/last.pt   # NOT phase1_full_rerun: the Phase 1.5
+                                         # numbers this is compared against were
+                                         # produced against these weights, and
+                                         # the two checkpoints hash differently
+  expect_contract:
+    physics_latent_irreps: 64x0e+16x1o+8x2e
+    physics_latent_dim: 152
+    frame: global
+    target_scope: heavy_atom
+
+data:
+  data_dir: data
+  esm2_cache_dir: esm2_cache
+  quarantine_path: mdcath_force_quarantine.json
+  coord_quarantine_path: mdcath_coord_quarantine.json
+  ps_per_frame: 1000.0              # 1 ns/frame, from the mdCATH paper
+  lags_ps: [1000.0, 4000.0]         # = 1 and 4 raw frames. Checked to be integral.
+  history_length: 2                 # (t-1, t) -> t+lag
+  max_residues: 250                 # the Phase 1 filter, so the split matches
+  temperatures: null                # all five
+  replicas: [0, 2, 4]               # three of five, to bound the pair count
+  pairs_per_trajectory: 4
+  max_domains: 120                  # train domains; validation gets max_domains/4
+  val_fraction: 0.2
+  split_seed: 0
+  phase1_split_snapshot: runs/phase1_full/config_snapshot.json
+  batch_size: 8
+  num_workers: 4
+
+model:
+  arm: structure_only               # overridden per arm by the runner
+  num_blocks: 3
+  residue_knn: 16
+  sequence_max_offset: 2
+  backbone_cutoff: 13.0             # also the span of the pair distance basis
+  use_plm: true
+  use_temperature: true
+  irreps:
+    lmax: 2
+    scalar_channels: 32
+    vector_channels: 8
+    tensor_channels: 4
+  conditioner:
+    d_cond: 64                      # identical for every arm, including the zero one
+    hidden: 128
+    atom_message_dim: 64
+    uncertainty_gating: true
+    # P0's hidden width is derived, not listed: matched_hidden_width() solves it
+    # so the geometry control carries the physics arm's parameter count. A hand-set
+    # number here would let the two drift apart silently.
+    d_pair: 32
+    pair_hidden: 128
+    pair_message_dim: 64
+    pair_relation_types: 6          # Phase 1's backbone relation vocabulary
+    gate_hidden: 32
+
+train:
+  seed: 0
+  learning_rate: 1.0e-3
+  warmup_steps: 200
+  lr_schedule: cosine
+  min_lr_factor: 0.05
+  max_steps: 6000
+  eval_every: 500
+  log_every: 100
+  eval_batches: 60
+  checkpoint_every: 1000
+  grad_clip: 10.0
+  device: cuda:0
+  future_physics_weight: 0.1        # P4 only; zeroed for every other arm by
+                                    # build_configs, so no other arm pays for it
+  future_physics_huber_delta: 1.0
+  loss_weights:
+    translation: 1.0
+    rotation: 1.0
+    pair_distance: 0.1
+    clash: 0.0                      # measured clash rate is 0.000 on real pairs
+    translation_scale_angstrom: 2.5 # measured mean |delta_r| over 1-4 ns pairs
+    rotation_scale_radians: 0.59    # measured mean frame rotation (33.8 deg)
+    rotation_loss: chordal          # smooth at theta = 0; geodesic is the metric
+  metrics:
+    contact_cutoff: 8.0
+    contact_sequence_separation: 3
+    clash_min_ca_distance: 3.6      # below the audited 3.67-4.01 A bonded CA-CA
+
+
+# ---------------------------------------------------------------------------
+# H1b -- backbone frame constraint refiner. FULL budget.
+#
+# Everything above this line is byte-identical to configs/phase1_6_h0.yaml and
+# configs/phase1_6_bounded.yaml, so H1b trains on the split its frozen coarse arm
+# was trained against; the runner aborts if the rebuilt manifest hash disagrees
+# with the checkpoint's.
+#
+# Differs from configs/phase1_6_h1b_smoke.yaml in the budget and the evaluation
+# cadence ONLY. Every weight, cap and threshold is the same value, fixed before
+# any H1b number existed.
+# ---------------------------------------------------------------------------
+h1b:
+  # P0 is the pair-geometry control: best backbone RMSD of the seven in H0
+  # (3.1927 A vs the oracle arm's 3.2116), so a geometry gain measured on top of
+  # it cannot be explained as slack the coarse arm had left.
+  arm: P0_pair_geometry_control
+
+  # 6000 steps, matching the coarse arms' own budget in configs/phase1_6_bounded
+  # .yaml. Not tuned: the point is that H1b gets the same number of steps the
+  # thing it sits on got, so "the refiner had less training" is not available as
+  # an explanation for either outcome.
+  steps: 6000
+  smoke_steps: 50
+  log_every: 100
+  eval_every: 250
+  eval_batches: 60          # the Stage B/Stage M validation cadence
+  learning_rate: 1.0e-3
+  weight_decay: 0.0
+  grad_clip: 10.0
+
+  refiner:
+    hidden: 128
+    # KEPT at the smoke values despite both caps saturating in the 200-step
+    # single-batch overfit probe. That probe memorises one batch and a model
+    # allowed a bound will use it, so saturation there is not evidence the cap
+    # is wrong. The caps are principled fractions of measured quantities -- 1.0 A
+    # against a mean |delta_r| of 2.5 A (40%), 15 deg against a mean frame
+    # rotation of 33.8 deg (44%) -- and the run logs the FRACTION of residues
+    # sitting at each cap every step, so whether the cap binds during real
+    # training is answered with evidence rather than raised pre-emptively.
+    max_translation: 1.0
+    max_rotation_rad: 0.2617993877991494   # 15 degrees
+    predict_uncertainty: false
+
+  # --- objective, identical to the smoke config --------------------------
+  primary_weight: 1.0       # the coarse arm's own loss, at full weight
+  geometry_weight: 1.0
+  bond_weight: 1.0          # angstrom^2
+  angle_weight: 1.0         # radian^2
+  # Small on purpose: H0 measured that even a PERFECT frame prediction leaves
+  # 108.3 serious inter-residue overlaps per structure against the identity
+  # baseline's 82.4, because the side chains are still stale. Driving this term
+  # to zero is unreachable by a frame refiner and tuning towards zero would
+  # trade frame accuracy for a floor H1a owns.
+  overlap_weight: 0.1
+  overlap_tolerance: 0.4
+  overlap_min_separation: 2

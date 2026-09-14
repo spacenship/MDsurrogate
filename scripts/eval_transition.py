@@ -26,8 +26,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from force_md.data.adapters.lag_pairs import LagPairDataset, LagPairManifest  # noqa: E402
 from force_md.training.transition_module import TransitionTrainer  # noqa: E402
-from force_md.transition import FrozenPhase1Extractor  # noqa: E402
-from train_transition import build_configs, build_datasets, make_loader  # noqa: E402
+from train_transition import (  # noqa: E402
+    build_configs,
+    build_datasets,
+    build_extractor,
+    make_loader,
+)
 
 
 def main() -> int:
@@ -47,18 +51,21 @@ def main() -> int:
     raw = yaml.safe_load(open(args.config))
     pairs, _, train_config, data = build_configs(raw, None)
 
-    extractor = FrozenPhase1Extractor.from_checkpoint(
-        raw["phase1"]["checkpoint"], device=args.device,
-        expect=raw["phase1"].get("expect_contract"),
-    )
-    probe, trainer = TransitionTrainer.load_checkpoint(
-        args.checkpoint, extractor, device=args.device
-    )
+    # The arm decides whether Phase 1 has to emit pair messages, so the checkpoint
+    # is read before the extractor is built rather than after: an extractor
+    # configured for the wrong arm produces a bundle whose pair field is None, and
+    # a pair conditioner would then fail on a re-evaluation that trained fine.
     provenance = torch.load(args.checkpoint, map_location="cpu", weights_only=False)[
         "provenance"
     ]
+    extractor = build_extractor(raw, provenance["arm"], args.device)
+    probe, trainer = TransitionTrainer.load_checkpoint(
+        args.checkpoint, extractor, device=args.device
+    )
     print(
-        f"arm {provenance['arm']} | step {trainer.step} "
+        f"arm {provenance['arm']} "
+        f"({provenance.get('canonical_arm', provenance['arm'])})"
+        f"{' [ORACLE]' if provenance.get('oracle') else ''} | step {trainer.step} "
         f"| parameters {provenance['parameter_count']:,} "
         f"| trained on manifest {str(provenance['manifest_hash'])[:12]}"
     )

@@ -49,6 +49,12 @@ class Phase1Output:
             ``batch.residues``.
         physics_latent_irreps: the irreps string, e.g. ``"64x0e+16x1o+8x2e"``.
         target_scope: which atoms the residue targets sum over.
+        pair: residue-pair message intermediates, or ``None``. Populated only when
+            the caller passes ``return_pair_messages=True``; every pre-Phase-1.6
+            call site gets ``None`` and behaves exactly as before. Being an
+            *optional, defaulted* field it also leaves existing checkpoints
+            loadable -- this is the "adding fields is fine" case above, not a
+            rename.
     """
 
     # atom level
@@ -76,18 +82,19 @@ class Phase1Output:
     physics_latent: Tensor
     physics_latent_irreps: str
     target_scope: str
+    pair: Optional["PairIntermediates"] = None  # noqa: F821
 
     def to(self, device) -> "Phase1Output":
         import dataclasses
 
         from torch import Tensor as _T
 
-        return dataclasses.replace(
-            self,
-            **{
-                f.name: v.to(device)
-                for f in dataclasses.fields(self)
-                for v in (getattr(self, f.name),)
-                if isinstance(v, _T)
-            },
-        )
+        moved = {
+            f.name: v.to(device)
+            for f in dataclasses.fields(self)
+            for v in (getattr(self, f.name),)
+            if isinstance(v, _T)
+        }
+        if self.pair is not None:
+            moved["pair"] = self.pair.to(device)
+        return dataclasses.replace(self, **moved)

@@ -64,6 +64,7 @@ __all__ = [
     "OracleAtomicForceConditioner",
     "CONDITIONER_ARMS",
     "build_conditioner",
+    "register_conditioner",
 ]
 
 #: Elements mdCATH contains, plus headroom. Matches the encoder's ``_MAX_Z``.
@@ -90,6 +91,18 @@ class ConditionerConfig:
         detach_conditioner: keep the conditioner's gradient from reaching Phase 1.
             Phase 1 is frozen anyway, so this is belt and braces for a later
             joint fine-tune.
+
+    Phase 1.6 adds the pair-arm widths below. They are defaulted, so every
+    Phase 1.5 config file and every saved ``probe_config`` still builds:
+
+        d_pair: width each edge's source (physics message or geometry) is
+            projected to. The one number :func:`~force_md.transition.pair_physics.matched_hidden_width`
+            matches the control against.
+        pair_hidden / pair_message_dim: the shared edge-message MLP.
+        pair_relation_types: size of the residue-edge relation vocabulary --
+            sequence offsets ``-2, -1, +1, +2`` plus spatial, plus one spare.
+            Must be at least what the graph emits; Phase 1's backbone level uses 6.
+        gate_hidden: hidden width of the ``P3`` uncertainty gate.
     """
 
     d_cond: int = 64
@@ -100,6 +113,12 @@ class ConditionerConfig:
     uncertainty_gating: bool = True
     logvar_reference: float = 0.0
     max_precision_weight: float = 4.0
+    # -- Phase 1.6 pair arms ------------------------------------------------
+    d_pair: int = 32
+    pair_hidden: int = 128
+    pair_message_dim: int = 64
+    pair_relation_types: int = 6
+    gate_hidden: int = 32
 
 
 def precision_weights(
@@ -146,6 +165,16 @@ class TransitionConditioner(nn.Module, abc.ABC):
 
     #: True only for the diagnostic oracle arm.
     requires_oracle: bool = False
+    #: True for arms whose forward takes a
+    #: :class:`~force_md.transition.pair_physics.ConditionerContext` keyword --
+    #: temperature and lag. False keeps the Phase 1.5 arms' signature exactly as
+    #: it was, so none of them is rebuilt or re-tested for a feature it ignores.
+    wants_context: bool = False
+    #: True for arms that need Phase 1's residue-pair messages, so a runner can
+    #: turn pair extraction on for exactly the arms that use it.
+    requires_pair_features: bool = False
+    #: True for arms whose constructor takes Phase 1's node latent irreps.
+    takes_latent_irreps: bool = False
     #: Short name used in configs, run records and the results table.
     arm: str = "abstract"
 
@@ -242,6 +271,7 @@ class PhysicsLatentConditioner(TransitionConditioner):
     """
 
     arm = "physics_latent"
+    takes_latent_irreps = True
 
     def __init__(self, config: ConditionerConfig, irreps: str):
         super().__init__(config)
@@ -309,6 +339,7 @@ class ForcePatternShapeConditioner(TransitionConditioner):
     """
 
     arm = "force_pattern_shape"
+    takes_latent_irreps = True
 
     def __init__(self, config: ConditionerConfig, irreps: str):
         super().__init__(config)
@@ -422,8 +453,32 @@ CONDITIONER_ARMS: dict[str, type[TransitionConditioner]] = {
 }
 
 
+def register_conditioner(cls: type[TransitionConditioner]) -> type[TransitionConditioner]:
+    """Add an arm to :data:`CONDITIONER_ARMS`, refusing to shadow one.
+
+    Phase 1.6's pair arms live in :mod:`force_md.transition.pair_physics`, which
+    imports this module; they register themselves on import rather than being
+    listed here, which would be a cycle. Re-registering an existing name raises:
+    two classes answering to one arm name is how an ablation quietly compares a
+    model with itself.
+    """
+    if cls.arm in CONDITIONER_ARMS and CONDITIONER_ARMS[cls.arm] is not cls:
+        raise ValueError(
+            f"arm {cls.arm!r} is already registered to "
+            f"{CONDITIONER_ARMS[cls.arm].__name__}; refusing to shadow it with "
+            f"{cls.__name__}"
+        )
+    CONDITIONER_ARMS[cls.arm] = cls
+    return cls
+
+
 def build_conditioner(
-    arm: str, config: ConditionerConfig, *, irreps: str
+    arm: str,
+    config: ConditionerConfig,
+    *,
+    irreps: str,
+    message_irreps: Optional[str] = None,
+    cutoff: float = 13.0,
 ) -> TransitionConditioner:
     """Construct one arm by name.
 
@@ -431,13 +486,26 @@ def build_conditioner(
         arm: a key of :data:`CONDITIONER_ARMS`.
         irreps: Phase 1's ``physics_latent_irreps``, read from the checkpoint
             contract rather than hard-coded -- Phase 1.5 must not assume 152.
+        message_irreps: Phase 1's ``pair_message_irreps``, from
+            ``LocalPhysicsModel.pair_contract()``. Required by the pair arms and
+            ignored by the rest, for the same reason: not hard-coded.
+        cutoff: the residue graph cutoff the pair distance basis spans.
     """
     if arm not in CONDITIONER_ARMS:
         raise ValueError(
             f"unknown arm {arm!r}; available: {sorted(CONDITIONER_ARMS)}"
         )
     cls = CONDITIONER_ARMS[arm]
-    if cls in (PhysicsLatentConditioner, ForcePatternShapeConditioner,
-               OracleAtomicForceConditioner):
-        return cls(config, irreps=irreps)
-    return cls(config)
+    kwargs: dict = {}
+    if cls.takes_latent_irreps:
+        kwargs["irreps"] = irreps
+    if cls.requires_pair_features:
+        if not message_irreps:
+            raise ValueError(
+                f"arm {arm!r} conditions on Phase 1's pair messages and needs "
+                "message_irreps; pass LocalPhysicsModel.pair_contract()"
+                "['pair_message_irreps'] rather than assuming a width"
+            )
+        kwargs["message_irreps"] = message_irreps
+        kwargs["cutoff"] = cutoff
+    return cls(config, **kwargs)

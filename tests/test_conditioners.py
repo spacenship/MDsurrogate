@@ -70,7 +70,11 @@ def extractor(tmp_path_factory):
         },
         path,
     )
-    return FrozenPhase1Extractor.from_checkpoint(path)
+    # Pair features on, so the Phase 1.6 arms are covered by the same
+    # shared-contract tests as the Phase 1.5 ones. Node-only arms ignore the
+    # extra field, and `test_every_arm_emits_the_same_shape` then means all
+    # ten arms rather than five.
+    return FrozenPhase1Extractor.from_checkpoint(path, extract_pair_features=True)
 
 
 def make_batch(sizes=(6, 5), seed: int = 0):
@@ -89,12 +93,32 @@ def bundles(extractor):
 def all_arms(extractor, config=None):
     config = config or ConditionerConfig()
     irreps = extractor.contract["physics_latent_irreps"]
+    message_irreps = extractor.metadata["pair_contract"]["pair_message_irreps"]
     torch.manual_seed(0)
-    return {arm: build_conditioner(arm, config, irreps=irreps) for arm in CONDITIONER_ARMS}
+    return {
+        arm: build_conditioner(
+            arm, config, irreps=irreps, message_irreps=message_irreps
+        )
+        for arm in CONDITIONER_ARMS
+    }
+
+
+def context_for(bundle):
+    """Temperature and lag for the arms that gate on them (P3)."""
+    from force_md.transition.pair_physics import ConditionerContext
+
+    rows = bundle.num_residues
+    return ConditionerContext(
+        temperature_kelvin=torch.full((rows,), 320.0),
+        lag_ps=torch.full((rows,), 1000.0),
+    )
 
 
 def run(conditioner, bundle, oracle):
-    return conditioner(oracle if conditioner.requires_oracle else bundle)
+    chosen = oracle if conditioner.requires_oracle else bundle
+    if conditioner.wants_context:
+        return conditioner(chosen, context=context_for(bundle))
+    return conditioner(chosen)
 
 
 # --------------------------------------------------------------------------

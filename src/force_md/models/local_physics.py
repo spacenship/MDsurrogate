@@ -50,15 +50,15 @@ __all__ = ["LocalPhysicsConfig", "LocalPhysicsModel"]
 
 def _detach_output(output: Phase1Output) -> Phase1Output:
     """Detach every tensor, so a locally-enabled graph never escapes."""
-    return dataclasses.replace(
-        output,
-        **{
-            f.name: v.detach()
-            for f in dataclasses.fields(output)
-            for v in (getattr(output, f.name),)
-            if isinstance(v, torch.Tensor)
-        },
-    )
+    detached = {
+        f.name: v.detach()
+        for f in dataclasses.fields(output)
+        for v in (getattr(output, f.name),)
+        if isinstance(v, torch.Tensor)
+    }
+    if output.pair is not None:
+        detached["pair"] = output.pair.detach()
+    return dataclasses.replace(output, **detached)
 
 
 @dataclass(frozen=True)
@@ -146,6 +146,7 @@ class LocalPhysicsModel(nn.Module):
         graph: Optional[HierarchicalGraph] = None,
         *,
         compute_conservative_force: Optional[bool] = None,
+        return_pair_messages: bool = False,
     ) -> Phase1Output:
         """Run the full Phase 1 forward pass.
 
@@ -154,6 +155,10 @@ class LocalPhysicsModel(nn.Module):
             graph: prebuilt topology; rebuilt from ``batch`` when omitted.
             compute_conservative_force: override the config. Defaults to True
                 whenever the energy branch exists.
+            return_pair_messages: populate ``Phase1Output.pair`` with the
+                residue-pair message intermediates. Off by default: this is an
+                additive interface for Phase 1.6 and changes neither the default
+                forward path nor any state-dict key.
 
         Returns:
             :class:`Phase1Output`.
@@ -175,9 +180,15 @@ class LocalPhysicsModel(nn.Module):
         outer_grad_enabled = torch.is_grad_enabled()
         if want_conservative:
             with torch.enable_grad():
-                output = self._forward_inner(batch, graph, want_conservative=True)
+                output = self._forward_inner(
+                    batch, graph, want_conservative=True,
+                    return_pair_messages=return_pair_messages,
+                )
             return output if outer_grad_enabled else _detach_output(output)
-        return self._forward_inner(batch, graph, want_conservative=False)
+        return self._forward_inner(
+            batch, graph, want_conservative=False,
+            return_pair_messages=return_pair_messages,
+        )
 
     def _forward_inner(
         self,
@@ -185,6 +196,7 @@ class LocalPhysicsModel(nn.Module):
         graph: Optional[HierarchicalGraph],
         *,
         want_conservative: bool,
+        return_pair_messages: bool = False,
     ) -> Phase1Output:
         # One tensor of record for geometry, so -dU/dx is complete.
         batch = link_backbone_to_atom_positions(batch)
@@ -199,7 +211,9 @@ class LocalPhysicsModel(nn.Module):
             graph = build_hierarchical_graph(batch, self.config.graph)
         frames: ResidueFrames = frames_from_batch(batch)
 
-        encoded = self.encoder(batch, graph, frames)
+        encoded = self.encoder(
+            batch, graph, frames, return_pair_messages=return_pair_messages
+        )
 
         # ---- energy and its gradient ------------------------------------
         if self.energy_head is not None:
@@ -254,6 +268,7 @@ class LocalPhysicsModel(nn.Module):
             physics_latent=encoded.residue_features,
             physics_latent_irreps=str(self.irreps),
             target_scope=self.config.target_scope,
+            pair=encoded.pair,
         )
 
     # -- Phase 2 handoff ---------------------------------------------------
@@ -268,4 +283,23 @@ class LocalPhysicsModel(nn.Module):
             "predicts_hidden_force": self.predict_hidden_force,
             "num_cycles": self.config.encoder.num_cycles,
             "lmax": self.config.encoder.irreps.lmax,
+        }
+
+    def pair_contract(self) -> dict[str, object]:
+        """What ``Phase1Output.pair`` promises, when it is asked for.
+
+        Kept **separate** from :meth:`latent_contract` on purpose: that contract is
+        recorded inside every existing Phase 1 checkpoint, and adding a key to it
+        would make every one of them fail its own equality check on load.
+        """
+        block = self.encoder.backbone_blocks[-1]
+        return {
+            "pair_message_irreps": str(block.irreps_message),
+            "pair_message_dim": int(block.irreps_message.dim),
+            "level": "backbone (residue-pair)",
+            "source": "last backbone block of the last cycle, pre-aggregation",
+            "row_order": "aligned with the backbone edge set (src -> dst)",
+            "frame": "global",
+            "relations": "sequence +-1/+-2 and CA-kNN, merged",
+            "num_edge_types": int(block.relation_embedding.num_embeddings),
         }

@@ -12,6 +12,7 @@ import glob
 import json
 import os
 
+import numpy as np
 import pytest
 
 torch = pytest.importorskip("torch")
@@ -80,6 +81,38 @@ def test_heavy_atom_scope_contains_no_hydrogen(dataset):
     b = dataset[0].batch
     assert bool(b.atoms.is_heavy.all()), "hydrogens leaked into the heavy-atom scope"
     assert not bool((b.atoms.atomic_number == 1).any())
+
+
+def test_force_only_path_does_not_load_plm_or_coordinates():
+    """The normalizer path needs force rows, selection metadata, and masks only."""
+    ds = MdCathDataset(
+        make_config(esm2_cache_dir="/nonexistent", allow_fake_plm=False)
+    )
+    try:
+        domain, temp, rep, frame = ds.index[0]
+        forces, force_mask = ds.load_force_arrays(domain, temp, rep, frame)
+        assert forces.ndim == 2 and forces.shape[-1] == 3
+        assert force_mask.shape == (forces.shape[0],)
+        assert bool(force_mask.all())
+        assert domain not in ds._topology
+        assert domain in ds._force_selection
+    finally:
+        ds.close()
+
+
+def test_sequence_tokens_path_does_not_load_plm_or_trajectory():
+    """ESM-C precompute needs only the canonical residue topology."""
+    ds = MdCathDataset(
+        make_config(esm2_cache_dir="/nonexistent", allow_fake_plm=False)
+    )
+    try:
+        domain = ds.index[0][0]
+        tokens = ds.sequence_tokens_for(domain)
+        assert tokens.ndim == 1 and tokens.dtype == np.int64
+        assert len(tokens) > 0
+        assert domain not in ds._topology
+    finally:
+        ds.close()
 
 
 def test_all_atom_scope_contains_hydrogen():

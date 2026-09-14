@@ -1,0 +1,41 @@
+architecture_version: heavy_flow_v2_geometry_context_pair_messages
+history:
+  length: 3  # includes the current frame
+  stride_frames: 1  # raw stored frames; independent of prediction lag
+  missing_policy: repeat_earliest  # repeat frame 0 only; quarantined frames exclude the sample
+# Stage 2: H_local -> G_geo -> C_res -> C_atom.
+# This file intentionally contains no H0-H2, frame-transition, physics-slot,
+# or teacher-module connection.
+stage: stage2_seq_geo
+sequence_encoder:
+  family: ESMC-300M
+  backend: esmc
+  model_name: models/ESMC-300M
+  revision: local-ESMC-300M
+  projected_dim: 64
+  cache_only: true
+  cache_dir: outputs/heavy_flow/esmc_cache
+geometry:
+  num_blocks: 4
+  lmax: 2
+  hidden_irreps: "96x0e + 24x1o + 8x1e + 8x2e"
+graph:
+  spatial_cutoff_angstrom: 6.0
+  max_spatial_neighbors: 32
+  include_covalent_edges: true
+  include_chain_adjacent_edges: false
+context:
+  joint_scalar_dim: 384
+  fusion_blocks: 4
+  attention_heads: 8
+  pair_bias: true
+  dropout: 0.1
+  geometry_modality_dropout: 0.1
+  atom_refine_blocks: 2
+  atom_refine_lmax: 2
+  atom_refine_radial_basis: 16
+  atom_refine_edge_embedding_dim: 8
+auxiliary:
+  masked_residue_geometry: true
+  bond_distance_denoising: true
+  noise_std_angstrom: 0.05

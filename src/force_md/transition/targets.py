@@ -158,14 +158,23 @@ class TransitionPrediction:
         rotation: ``[N_res, 3, 3]`` predicted ``R_cur^T R_fut``. Must be a proper
             rotation; the probe head produces it through a 6D Gram-Schmidt map so
             this holds by construction.
+        future_physics_latent: ``[N_res, D]`` or ``None`` -- the ``P4`` auxiliary
+            head's prediction of Phase 1's latent at ``t + lag``, in the current
+            residue frame. An **output**, carried here precisely because this
+            dataclass is the model's output type and therefore has no path back
+            into the model's inputs.
     """
 
     translation_local: Tensor
     rotation: Tensor
+    future_physics_latent: Optional[Tensor] = None
 
     def to(self, device) -> "TransitionPrediction":
         return TransitionPrediction(
-            self.translation_local.to(device), self.rotation.to(device)
+            self.translation_local.to(device),
+            self.rotation.to(device),
+            None if self.future_physics_latent is None
+            else self.future_physics_latent.to(device),
         )
 
 

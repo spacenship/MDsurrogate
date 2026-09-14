@@ -148,6 +148,9 @@ class EquivariantMessageBlock(nn.Module):
         self.tp, tp_out_irreps = _build_uvu_tensor_product(
             self.irreps_node, self.irreps_sh
         )
+        #: Irreps of one *edge* message, before aggregation. Phase 1.6 reads these
+        #: as the pair-interaction latent; nothing in Phase 1 depends on them.
+        self.irreps_message = tp_out_irreps
         # Linear is applied *after* the scatter, not per edge: a linear map
         # commutes with summation, and doing it on N nodes instead of E edges is
         # where most of the activation memory is saved.
@@ -170,15 +173,29 @@ class EquivariantMessageBlock(nn.Module):
         edges: EdgeSet,
         edge_sh: Tensor,
         edge_distance: Tensor,
-    ) -> Tensor:
+        *,
+        return_messages: bool = False,
+    ):
         """One residual update of ``node_features``.
 
         An empty relation is a no-op, not an error: ``scatter_sum`` returns exact
         zeros, so a protein whose cutoff graph is empty still produces finite
         output and finite gradients.
+
+        Args:
+            return_messages: also return the per-edge message tensor
+                ``[E, irreps_message.dim]`` computed on the way to the
+                aggregation. Off by default, so the Phase 1 forward path and its
+                memory profile are byte-for-byte what they were; Phase 1.6's pair
+                conditioners turn it on. ``None`` when the relation is empty.
+
+        Returns:
+            The updated node features, or ``(node_features, messages)`` when
+            ``return_messages`` is set.
         """
         n = node_features.shape[0]
         h = self.self_interaction(node_features)
+        messages = None
 
         if edges.num_edges > 0:
             scalars = extract_scalars(node_features, self.irreps_node)
@@ -199,7 +216,8 @@ class EquivariantMessageBlock(nn.Module):
         if self.use_body_order_3:
             h = h + self.square_mix(self.tensor_square(h))
 
-        return node_features + self.output(h)
+        updated = node_features + self.output(h)
+        return (updated, messages) if return_messages else updated
 
 
 class AtomInteractionBlock(EquivariantMessageBlock):

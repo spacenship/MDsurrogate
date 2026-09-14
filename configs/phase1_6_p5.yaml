@@ -1,0 +1,109 @@
+# Phase 1.6 P5 -- partial end-to-end fine-tuning. **GATED. NOT RUNNABLE.**
+#
+# The plan permits preparing this arm only once all of the following hold:
+#
+#   1. P1 or P2 is clearly better than P0;
+#   2. the frozen physics latent carries real predictive signal;
+#   3. there is a geometry-only partial-finetuning control to compare against.
+#
+# As of the Stage B screening in docs/phase1_6_report.md, condition 1 has **not**
+# fired. So this file records what the arm would be, and the runner refuses to
+# start it: `run_phase1_6_ablation.py` rejects any arm whose stage is "gated".
+#
+# What is deliberately NOT implemented, and must be before this is run:
+#
+#   * selective unfreezing of Phase 1's last backbone block (everything else
+#     stays frozen -- this is not a Phase 1 fine-tune);
+#   * the Phase 1 force auxiliary loss that keeps force-reconstruction semantics
+#     from collapsing while the transition loss pulls on those weights. Without
+#     it the arm would improve the transition metric by destroying the
+#     representation the whole experiment is about, and the result would look
+#     like a win;
+#   * a geometry-only partial-finetuning control, without which a P5 number
+#     cannot support any conclusion about physics.
+#
+# Implementing the first without the second and third would produce a number that
+# is worse than no number, so none of the three is stubbed.
+
+phase1:
+  checkpoint: runs/phase1_full/last.pt
+  expect_contract:
+    physics_latent_irreps: 64x0e+16x1o+8x2e
+    physics_latent_dim: 152
+    frame: global
+    target_scope: heavy_atom
+  # -- what partial unfreezing would mean here -------------------------------
+  freeze: false
+  unfreeze: [backbone_blocks.-1]    # the last residue-level interaction block only
+  learning_rate_factor: 0.05        # <= 0.1 x the adapter LR, per the plan
+  force_auxiliary_weight: 1.0       # retains Phase 1's force semantics -- REQUIRED
+
+data:
+  data_dir: data
+  esm2_cache_dir: esm2_cache
+  quarantine_path: mdcath_force_quarantine.json
+  coord_quarantine_path: mdcath_coord_quarantine.json
+  ps_per_frame: 1000.0
+  lags_ps: [1000.0, 4000.0]
+  history_length: 2
+  max_residues: 250
+  temperatures: null
+  replicas: [0, 2, 4]
+  pairs_per_trajectory: 4
+  max_domains: 120
+  val_fraction: 0.2
+  split_seed: 0
+  phase1_split_snapshot: runs/phase1_full/config_snapshot.json
+  batch_size: 8
+  num_workers: 4
+
+model:
+  arm: pair_physics_moments         # P5 is P2's conditioner; what differs is what is frozen
+  num_blocks: 3
+  residue_knn: 16
+  sequence_max_offset: 2
+  backbone_cutoff: 13.0
+  use_plm: true
+  use_temperature: true
+  irreps:
+    lmax: 2
+    scalar_channels: 32
+    vector_channels: 8
+    tensor_channels: 4
+  conditioner:
+    d_cond: 64
+    hidden: 128
+    atom_message_dim: 64
+    uncertainty_gating: true
+    d_pair: 32
+    pair_hidden: 128
+    pair_message_dim: 64
+    pair_relation_types: 6
+    gate_hidden: 32
+
+train:
+  seed: 0
+  learning_rate: 1.0e-3
+  warmup_steps: 200
+  lr_schedule: cosine
+  min_lr_factor: 0.05
+  max_steps: 6000
+  eval_every: 500
+  log_every: 100
+  eval_batches: 60
+  checkpoint_every: 1000
+  grad_clip: 10.0                   # required: unfrozen Phase 1 weights carry a
+                                    # body-order-3 term and are not LR-robust
+  device: cuda:0
+  loss_weights:
+    translation: 1.0
+    rotation: 1.0
+    pair_distance: 0.1
+    clash: 0.0
+    translation_scale_angstrom: 2.5
+    rotation_scale_radians: 0.59
+    rotation_loss: chordal
+  metrics:
+    contact_cutoff: 8.0
+    contact_sequence_separation: 3
+    clash_min_ca_distance: 3.6

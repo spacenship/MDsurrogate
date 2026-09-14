@@ -1,5 +1,9 @@
 # force-md — Force-Conditioned Protein MD Ensemble Model
 
+현재 작업 중인 **heavy-flow Stage 1–4 v2**의 아키텍처, 검증 결과, checkpoint
+호환 범위와 학습 명령은 [heavy-flow v2 구현 문서](docs/heavy_flow_v2_architecture.md)에
+정리되어 있다. 아래 Phase 1/1.5/1.6 설명과 기존 Stage 보고서는 이전 작업 기록이다.
+
 Phase 1: a hierarchical **local-physics** model over an atom / residue /
 backbone-frame graph, SE(3)-equivariant at `l_max = 2`, predicting atomic and
 residue forces, torques, uncertainty and an invariant energy from mdCATH.
@@ -21,6 +25,8 @@ stochastic transition on top of `physics_latent`.
 
 ```
 src/force_md/
+  transition/  Phase 1.5/1.6 probe: conditioners, pair_physics, future_physics,
+               arms registry, targets, metrics, frozen Phase 1 extractor
   data/        contracts, CHARMM vocabularies, units, synthetic fixtures,
                collation, PSF parsing, adapters/mdcath.py
   geometry/    residue frames, local coordinates, rigid-motion helpers
@@ -108,6 +114,77 @@ from runs that are merely similar.
 
 Design and contracts: [docs/phase1_5_design.md](docs/phase1_5_design.md).
 
+### Phase 1.6 — the pair-interaction ablation
+
+Phase 1.5 asked whether Phase 1's *node* latent helps. Phase 1.6 asks whether the
+**interaction** between two residues does — the per-edge message a message pass
+computes and then throws away — and whether it beats a capacity-matched control
+that sees the same edges with the physics removed.
+
+```bash
+# Stage A: every arm forward/backward, checkpoint, evaluate. ~4 min.
+CUDA_VISIBLE_DEVICES=4 python scripts/run_phase1_6_ablation.py \
+  --config configs/phase1_6_smoke.yaml
+
+# Stage B: bounded screening, 120 domains, 6000 steps, one seed, seven arms
+CUDA_VISIBLE_DEVICES=4 python scripts/run_phase1_6_ablation.py \
+  --config configs/phase1_6_bounded.yaml
+
+# statistics and figures: paired on sample id, bootstrapped over domains
+python scripts/analyze_phase1_6.py --runs runs/phase1_6_bounded_seed0 \
+  --out docs/phase1_6_results_bounded.md --plots docs/figures
+
+# re-evaluate saved arms over the whole validation set, without retraining
+python scripts/reevaluate_phase1_6.py --run runs/phase1_6_bounded_seed0 \
+  --config configs/phase1_6_bounded.yaml
+
+# Stage C: 3 seeds on GPUs 4,5,6. Only when the screening justifies it.
+bash scripts/launch_phase1_6_full.sh
+```
+
+#### Stage M — extended metrics on the saved checkpoints
+
+Stage B separated the arms on two numbers, and they disagreed: `P1` beat `P0` on
+rotation while losing on Cα RMSD. Stage M re-scores the **same frozen
+checkpoints** on pair geometry (dRMSD by sequence separation), contact
+*formation* and *breakage*, backbone torsions including omega, and what physical
+validity this reconstruction can actually support. It trains nothing and verifies
+every checkpoint's sha256 before and after.
+
+```bash
+# waits for a free GPU, then runs the tests, the re-scoring and the report
+bash scripts/run_phase1_6_extended_when_free.sh
+
+# or by hand
+python scripts/evaluate_phase1_6_extended.py --run runs/phase1_6_bounded_seed0 \
+  --config configs/phase1_6_bounded.yaml \
+  --out runs/phase1_6_extended_metrics_seed0 --device cuda:4
+python scripts/analyze_phase1_6_extended.py \
+  --records runs/phase1_6_extended_metrics_seed0/records.jsonl \
+  --out docs/phase1_6_results_extended.md --plots docs/figures
+```
+
+The metric suite lives in
+[src/force_md/transition/extended_metrics.py](src/force_md/transition/extended_metrics.py)
+and extends `metrics.py` rather than replacing it: `ca_rmsd` and the rotation
+geodesic keep the Stage B definitions bit for bit, which is asserted by test.
+Audit and the decisions taken:
+[docs/phase1_6_extended_metrics_audit.md](docs/phase1_6_extended_metrics_audit.md).
+
+Arms carry two names: the canonical role (`P1_pair_physics_frozen`) and the
+registered conditioner (`pair_physics`). Both appear in every row —
+[src/force_md/transition/arms.py](src/force_md/transition/arms.py) is the mapping.
+
+The pair latent is exposed by an **additive** interface:
+`LocalPhysicsModel.forward(..., return_pair_messages=True)` populates
+`Phase1Output.pair`, and the default path is bitwise what it was, so every Phase 1
+checkpoint still loads and Phase 1.5's numbers stand.
+
+Audit of what actually exists versus what the plan assumed:
+[docs/phase1_6_audit.md](docs/phase1_6_audit.md).
+Results: [docs/phase1_6_report.md](docs/phase1_6_report.md),
+full tables in [docs/phase1_6_results_bounded.md](docs/phase1_6_results_bounded.md).
+
 ## What the model does
 
 ```
@@ -152,8 +229,28 @@ Phase 2 contract: [docs/phase2_interface.md](docs/phase2_interface.md).
 
 ## Status
 
-Phase 1 and Phase 1.5 complete. **533 tests pass** (~4 min; real-data tests skip
-themselves if `data/` is empty).
+Phase 1 and Phase 1.5 complete; Phase 1.6 screened. **581 tests pass** (~4 min;
+real-data tests skip themselves if `data/` is empty).
+
+**Phase 1.6 screening (1 seed, 30 held-out domains, 1,760 pairs per lag).** The
+pair *architecture* beats the pair *physics*: a geometry-only control with the
+same edges and 26 fewer parameters is the best arm on Cα RMSD at both lags, while
+Phase 1's pair message beats it on rotation (+0.27% at 1 ns) and loses on RMSD
+(−0.34%). The oracle again fails to beat structure-and-history, reproducing the
+Phase 1.5 ceiling on a different manifest. Stage C not started — the gate did not
+fire cleanly. [docs/phase1_6_report.md](docs/phase1_6_report.md).
+
+**Stage M extended metrics (2026-08-27).** The seven Stage B checkpoints
+re-scored on 3,520 pairs without retraining, reproducing the Stage B Cα RMSD and
+rotation exactly. The result is not about the arms: **every trained arm is worse
+than the identity baseline on all ten physical-validity cells** — peptide C–N
+bond 4–5×, backbone angle 3.5–5×, consecutive Cα distance 5–7×, Cα clash rate
+361–1651×. The probe predicts a rigid update per residue frame, each frame moves
+independently, and the bonds *between* residues absorb the error, while the loss
+carries `clash: 0.0` and no bond term. Among the arms, `P1`'s rotation gain over
+`P0` (+0.10° at both lags) comes with **worse formed-contact F1 at both lags** —
+an orientation-only effect that does not clear a Stage C gate.
+[docs/phase1_6_results_extended.md](docs/phase1_6_results_extended.md).
 
 **Phase 1.5 answered its question.** 3 seeds × 5 arms × 40,000 steps, evaluated on
 181 held-out domains / 72,080 pairs. Full detail in

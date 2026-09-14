@@ -34,6 +34,7 @@ from force_md.conditioning.esm2 import (  # noqa: E402
     Esm2EmbeddingCache,
     compute_esm2_embeddings,
 )
+from force_md.data.residue_order import residue_order
 from force_md.data import residue_constants as rc  # noqa: E402
 
 
@@ -51,8 +52,7 @@ def domain_sequences(paths: list[str]) -> dict[str, str]:
             g = f[domain]
             resid = np.asarray(g["resid"][:])
             resname = np.array([r.decode() for r in g["resname"][:]])
-            _, first = np.unique(resid, return_index=True)
-            order = np.sort(first)
+            _, order, _ = residue_order(resid, g["chain"][:])
             out[domain] = "".join(rc.one_letter(resname[i]) for i in order)
     return out
 
@@ -100,7 +100,15 @@ def main() -> int:
     config = Esm2Config(model_name=args.model, revision=args.revision, layer=args.layer)
     cache = Esm2EmbeddingCache(args.out_dir)
 
-    todo = {d: s for d, s in seqs.items() if args.overwrite or not cache.exists(d)}
+    todo = {}
+    for domain, sequence in seqs.items():
+        if not args.overwrite and cache.exists(domain):
+            try:
+                cache.load(domain, expect_sequence=sequence, config=config)
+                continue
+            except ValueError:
+                print(f"{domain}: regenerating mismatched sequence/checkpoint cache", flush=True)
+        todo[domain] = sequence
     print(f"\ncomputing {len(todo)} embedding(s) on {args.device} "
           f"({len(seqs) - len(todo)} already cached)", flush=True)
 
